@@ -9,6 +9,8 @@ const session = require('express-session')
 const path = require('path')
 const fs = require('fs');
 const { checkPrimeSync } = require('crypto');
+const { env } = require('process');
+const { Console } = require('console');
 
 const app = express()
 const upload = multer({ dest: 'uploads/' })
@@ -25,7 +27,7 @@ const upload = multer({ dest: 'uploads/' })
 // }));
 
 app.use(session({
-  secret: 'aaa aaa',
+  secret: process.env.SESSION_SECRET,
   saveUninitialized: true,
   resave: false,
   cookie: {
@@ -41,10 +43,10 @@ var tempCategories
 
 //database
 var con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "123456",
-  database: "hit",
+  host: process.env.HOST,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE,
   multipleStatements: true
 });
 
@@ -84,7 +86,6 @@ const authenticateUser = (req, res, next) => {
 };
 
 app.all('*', authenticateUser);
-
 
 //pages:
 app.get('/', async (req, res) => {
@@ -388,5 +389,6 @@ app.get('/api', () => {
 
 
 app.listen('3000', () => {
-  console.log('listening on 3000')
+  console.log('listening on 3000');
+  console.log(process.env.USER)
 })
