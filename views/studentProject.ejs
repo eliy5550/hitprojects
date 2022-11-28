@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./_head.ejs')%>
+    <body>
+        <%- include('./_nav.ejs')%>
+        <h1><a href="/project/<%=projects[0].pid%>"><%=projects[0].title%></a></h1>
+        <h1>Tasks</h1>
+        <%if(tasks.length == 0){%>
+            There are no tasks yet, the project manager will add tasks at the first meeting!
+        <%}%>
+        <% tasks.forEach(task=>{%>
+            task: <%= task.title%><br>
+            description: <%= task.descriptionText%><br>
+            deadline: <%= task.deadline%><br>
+            isDone: <%= task.isDone%><br>
+            <%if(task.isDone == 0){%>
+                <a href="/taskStatus/<%=task.pid+"/"+task.tid%>"">- Done -</a><br><br>
+            <%}%>
+        <%})%>
+    </body>
+
+</html>

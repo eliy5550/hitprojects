@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./_head.ejs')%>
+
+    <body>
+        <%- include('./_nav.ejs')%>
+            <ul>
+                <%if (projects.length==0){%>
+                    <%="project not found "%>
+<%}%>
+
+
+<br>
+<br>
+<h3>Project's Info</h3>
+
+<form action="/editProject" method="POST" enctype="multipart/form-data">
+    <div>
+        <input type="hidden" id="pid" name="pid" value="<%=projects[0].pid%>" />
+    </div>
+    <div>
+        <label for="title">Project Name</label>
+        <input required type="text" id="title" name="title" value="<%=projects[0].title%>" />
+    </div>
+    <div>
+        <label for="description">Description</label><br>
+        <textarea required 
+        type="text" 
+        id="description" 
+        name="description"
+        rows="5"
+        cols="40"
+        ><%=projects[0].description%>
+        </textarea>
+    </div>
+    <div>
+        <select name="category" id="category">
+            <option value="<%=projects[0].category%>"><%=projects[0].category%></option>
+
+            <%cats.forEach(c=> {%>
+                    <option 
+                    value="<%=c.categoryName%>"
+                    >
+                    <%=c.categoryName%>
+                    </option>
+                    <%});%>
+                </select>
+    </div>
+    <div>
+        <label for="start">Start Date</label>
+        <input type="date" id="start"  name="start" value="<%=projects[0].start%>"/>
+    </div>
+    <div>
+        <label for="finish">Finish Date</label>
+        <input type="date" id="finish"  name="finish" value="<%=projects[0].finish%>"/>
+    </div>
+    <div>
+        <label for="maxStudents">How many students can register</label>
+        <input required type="number" min="1" max="6" id="maxStudents"  name="maxStudents" value="<%=projects[0].maxStudents%>" />
+    </div>
+    <div>
+        <input type="submit" value="Update Project">
+    </div>
+</form>
+<h3><%=message%></h3>
+<br />
+<h3>Projects Tasks</h3>
+<a href="/addTask/<%=projects[0].pid%>">Add a task to this project</a>
+<% if (tasks.length == 0){%>
+    <br>
+    There are no tasks for this project yet!
+    <br>
+    <%}%>
+<br />
+<% tasks.forEach(task=>{%>
+    task: <%= task.title%><br>
+    description: <%= task.descriptionText%><br>
+    deadline: <%= task.deadline%><br>
+    isDone: <%= task.isDone%><br>
+    <%if(task.isDone == 0){%>
+        <a href="/taskStatus/<%=task.pid+"/"+task.tid%>"">- Done -</a>
+    <%}%>
+    <a href="/taskDelete/<%=task.pid+"/"+task.tid%>"">- Delete Task -</a>
+    <br><br>
+<%})%>
+
+<h3>Project's Updates</h3>
+<% if (updates.length == 0){%>
+    <br>
+    There are no updates in this project yet!
+    <br>
+    <%}%>
+<br />
+<% updates.forEach(u=>{%>
+    Decription: <%= u.description%><br>
+    Date: <%= u.date%><br>
+    Who Was There: <%= u.whoWasThere%><br><br>
+<%})%>
+
+    </body>
+
+</html>

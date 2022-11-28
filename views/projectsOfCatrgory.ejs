@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./_head.ejs')%>
+    <body>
+<%- include('./_nav.ejs')%>
+<ul>
+<%if (projects.length == 0){%>
+    <%="no projects in this category"%>
+<%}%>
+
+    <%projects.forEach(p => {%>
+        <li><a href="/project/<%=p.pid%>"><%=p.title%></a></li>
+    <%});%>
+</ul>
+</body>
+
+</html>

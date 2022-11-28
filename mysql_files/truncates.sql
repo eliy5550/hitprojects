@@ -1,0 +1,8 @@
+TRUNCATE TABLE student;
+TRUNCATE TABLE admins;
+TRUNCATE TABLE manager;
+TRUNCATE TABLE task;
+
+TRUNCATE TABLE project;
+TRUNCATE TABLE projectupdates;
+

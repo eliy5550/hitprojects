@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./_head.ejs')%>
+    <body>
+<%- include('./_nav.ejs')%>
+<%if (projects.length == 0){%>
+    <%="no project found"%>
+<%}%>
+<h2><%=projects[0].title%></h2>
+<ul>
+    <li>description : <%=projects[0].description%></li>
+    <li>start : <%=projects[0].start%></li>
+    <li>finish : <%=projects[0].finish%></li>
+    <li>maxStudents : <%=projects[0].maxStudents%></li>
+    <% if (user.role == "student") {
+        if(user.pid == null){%>
+            <a href="/projectRegister/<%=projects[0].pid%>"><%="register to this project"%></a>
+        <%} else
+        {
+            %><%="you are already registered to a project."%><%
+        }
+    }else{
+        %><%="Login as a student to register to this project."%><%
+    }
+    %>
+</ul>
+</body>
+
+</html>

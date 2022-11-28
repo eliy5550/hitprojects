@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./_head.ejs')%>
+
+    <body>
+        <%- include('./_nav.ejs')%>
+
+            <form action="/addTask" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="pid" id="pid" value="<%=taskPid%>" />
+                <div>
+                    <label for="title">Title</label>
+                    <input required type="text" id="title" name="title" />
+                </div>
+                <div>
+                    <label for="description">Description</label>
+                    <input required type="text" id="description" name="description" />
+                </div>
+                <div>
+                    <label for="deadline">Dead Line</label>
+                    <input type="date" id="deadline"  name="deadline" />
+                </div>
+                <div>
+                    <label for="stage">Development Stage</label>
+                    <select id="stage"  name="stage">
+                            <%stages.forEach(stage => {%>
+                                <option value="<%=stage%>"><%=stage%></option>
+                                <%});%>
+                    </select>
+                </div>
+                <div>
+                    <input required type="hidden" id="deadline" name="deadline" value="0" />
+                </div>
+
+                <div>
+                    <input type="submit" value="ADD TASK">
+                </div>
+            </form>
+
+    </body>
+
+
+</html>

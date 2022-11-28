@@ -1,0 +1,16 @@
+<html>
+<%- include('./_head.ejs')%>
+
+<body>
+    <%- include('./_nav.ejs')%>
+    <form action="/taskStatus" enctype="multipart/form-data" method="POST">
+        <input type="hidden" name="tid" id="tid" value="<%=tid%>">
+        <input type="hidden" name="pid" id="pid" value="<%=pid%>">
+        <h2>TASK DONE?</h2>
+        <input type="submit" value="YES" ><br>
+        <label for="info">Some info about the task completion:</label>(this is logged into project updates)<br>
+        <textarea name="description" id="description" cols="30" rows="10"></textarea>
+    </form>
+
+</body>
+</html>

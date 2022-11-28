@@ -1,0 +1,19 @@
+
+        Logged in as: <%= user.role %>
+        <%if(user.role=='admin' ){%>
+        <%- include('./_admin_nav.ejs')%>
+        <%}%>
+        <%if(user.role=='manager' ){%>
+        <%- include('./_manager_nav.ejs')%>
+        <%}%>
+        <% if(user.role=='student' ){%>
+        <%- include('./_student_nav.ejs')%>
+        <%}%>
+        <% if(user.role=='guest' ){%><br>
+          <a  href="/register">register</a><br>
+          <a  href="/login">login</a><br>
+        <%}%>
+
+        <br><a class="navbar-brand" href="/">HOME</a><br>
+
+<hr>

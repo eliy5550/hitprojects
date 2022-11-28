@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./_head.ejs')%>
+
+    <body>
+        <%- include('./_nav.ejs')%>
+        <h1>ARE YOU SURE?</h1>
+        <h4>You can register only once!</h4>
+        <h4>You can register only to one project!</h4>
+        <form method="POST" enctype="multipart/form-data" action="/projectRegister">
+            <input type="hidden" name="pid" id="pid" value="<%=pid%>">
+            <input type="hidden" name="sid" id="sid">
+            <input type="submit" value="REGISTER TO THIS PROJECT">
+        </form>
+    </body>
+
+</html>
