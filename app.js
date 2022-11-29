@@ -388,7 +388,7 @@ app.get('/api', () => {
 })
 
 
-app.listen('3000', () => {
+app.listen(process.env.PORT, process.env.SERVER , () => {
   console.log('listening on 3000');
   console.log(process.env.USER)
 })
