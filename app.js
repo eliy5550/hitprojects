@@ -11,6 +11,8 @@ const fs = require('fs');
 const { checkPrimeSync } = require('crypto');
 const { env } = require('process');
 const { Console } = require('console');
+const bcrypt = require('bcrypt')
+
 
 const app = express()
 const upload = multer({ dest: 'uploads/' })
@@ -127,6 +129,7 @@ app.post('/login', upload.none(), (req, res) => {
   req.session.userid = 1;
 
   console.log(`data received : ${req.body.email} ${req.body.password}`);
+  req.body.password = bcrypt.hashSync(req.body.password , process.env.PASSWORD_SECRET)
   //are u a student
   const sql1 = `select * from admins WHERE email="${req.body.email}" and pass="${req.body.password}";`;
   const sql2 = `select * from manager WHERE email="${req.body.email}" and pass="${req.body.password}";`;
@@ -178,6 +181,7 @@ app.get('/register', (req, res) => {
 })
 
 app.post('/register', upload.none(), (req, res) => {
+  req.body.password = bcrypt.hashSync(req.body.password , process.env.PASSWORD_SECRET)
   con.query(`
   insert into student  (id,fullName,pass,email,phoneNumber ) 
   values("${req.body.id}"  ,"${req.body.fullName}"  , 
@@ -389,6 +393,6 @@ app.get('/api', () => {
 
 
 app.listen(process.env.PORT, process.env.SERVER , () => {
-  console.log('listening on ' + process.env.SERVER + ' PORT ' + process.env.PORT);
+  console.log('listening on :  http://' + process.env.SERVER + ":" + process.env.PORT);
   console.log(process.env.USER)
 })
