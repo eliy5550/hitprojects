@@ -15,6 +15,8 @@ const bcrypt = require('bcrypt')
 
 
 const app = express()
+
+app.use(express.static('public'))
 const upload = multer({ dest: 'uploads/' })
 
 // app.use(session({
@@ -65,7 +67,7 @@ const authenticateUser = (req, res, next) => {
 
   //console.log(req.session.userid)
   if (req.session.key != undefined) {
-    console.log('theres a key ' + req.session.key)
+    console.log('theres a key! ')
     jwt.verify(req.session.key, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
       if (err) {
         console.log('invalid key')
@@ -106,7 +108,7 @@ app.get('/logout', (req, res) => {
 
 app.get('/projectsOfCategory/:cat', async (req, res) => {
   await con.query(`select * from project where category='${req.params.cat}'`, (err, result) => {
-    console.log(`select * from project where category='${req.cat}'`)
+    console.log(`select * from project where category='${req.params.cat}'`)
     if (err) res.redirect("404.ejs");
     res.render('projectsOfCatrgory.ejs', { user: req.user, projects: result })
   });
@@ -129,7 +131,7 @@ app.post('/login', upload.none(), (req, res) => {
   req.session.userid = 1;
 
   console.log(`data received : ${req.body.email} ${req.body.password}`);
-  req.body.password = bcrypt.hashSync(req.body.password , process.env.PASSWORD_SECRET)
+  req.body.password = bcrypt.hashSync(req.body.password, process.env.PASSWORD_SECRET)
   //are u a student
   const sql1 = `select * from admins WHERE email="${req.body.email}" and pass="${req.body.password}";`;
   const sql2 = `select * from manager WHERE email="${req.body.email}" and pass="${req.body.password}";`;
@@ -181,7 +183,7 @@ app.get('/register', (req, res) => {
 })
 
 app.post('/register', upload.none(), (req, res) => {
-  req.body.password = bcrypt.hashSync(req.body.password , process.env.PASSWORD_SECRET)
+  req.body.password = bcrypt.hashSync(req.body.password, process.env.PASSWORD_SECRET)
   con.query(`
   insert into student  (id,fullName,pass,email,phoneNumber ) 
   values("${req.body.id}"  ,"${req.body.fullName}"  , 
@@ -220,20 +222,32 @@ app.post('/addProject', authenticateUser, upload.none(), async (req, res) => {
 
 
 app.get('/editProjects/', async (req, res) => {
-  await con.query(`select * from project`, (err, result) => {
-    res.render('editProjects.ejs', { user: req.user, projects: result })
-  });
+  if (req.user.role == 'admin') {
+
+    con.query(`select * from project`, (err, result) => {
+      res.render('editProjects.ejs', { user: req.user, projects: result })
+    });
+  } else if (req.user.role == 'manager') {
+    con.query(`select _manager_project.mid , _manager_project.pid , project.title , project.category from _manager_project left join project on _manager_project.pid = project.pid where mid=${req.user.id};`, (err, result) => {
+      res.render('editProjects.ejs', { user: req.user, projects: result })
+    });
+  }
 })
 
+
 app.get('/editProject/:pid', upload.none(), (req, res) => {
+  //if(user.role == 'guest' || user.role == 'student' ){ return res.send('unauthorized! :(')}
   const sql = `select * from project where pid = ${req.params.pid};`
   const sql2 = 'select * from projectcategories;'
   const sql3 = `select * from task where pid = ${req.params.pid} order by tid desc; `
   const sql4 = `select * from projectupdates where pid = ${req.params.pid} order by uid desc; `
-  console.log(sql4)
-  con.query(sql + sql2 + sql3 + sql4, (err, results) => {
+  const sql5 = `select _manager_project.pid , manager.mid, manager.fullName , manager.email , manager.phoneNumber from _manager_project join manager on _manager_project.mid = manager.mid where pid = ${req.params.pid}; `
+  const sql6 = `select * from student where pid = ${req.params.pid}; `
+
+  con.query(sql + sql2 + sql3 + sql4 + sql5+ sql6, (err, results) => {
+
     if (err) res.send(err)
-    res.render('editProject.ejs', { message: "", user: req.user, projects: results[0], cats: results[1], tasks: results[2] , updates: results[3] })
+    res.render('editProject.ejs', { message: "", user: req.user, projects: results[0], cats: results[1], tasks: results[2], updates: results[3], managers: results[4] , students: results[5] })
   })
 })
 
@@ -344,30 +358,31 @@ app.post('/taskDelete', upload.none(), (req, res) => {
 })
 
 app.get('/myProject', (req, res) => {
-  console.log(`select * from student inner join project on student.pid = project.pid inner join task on project.pid = task.pid where sid = ${req.user.id};`)
-  con.query(`select * from student inner join project on student.pid = project.pid inner join task on project.pid = task.pid where sid = ${req.user.id};select * from student inner join project on student.pid = project.pid where sid=${req.user.id};
-  `,
+  const sql = `select * from student inner join project on student.pid = project.pid inner join task on project.pid = task.pid where sid = ${req.user.id};`;
+  const sql1 = `select * from student inner join project on student.pid = project.pid where sid=${req.user.id};`
+  const sql2 = `select * from _student_task join task on task.tid = _student_task.tid where sid =${req.user.id}`
+  con.query(sql + sql1 + sql2  ,
     (err, results) => {
-      if (err) { res.send("err"); throw err; }
+      if (err) {console.log(err); return res.send("there was an error");  }
       console.log(results[0])
-      res.render('studentProject.ejs', { user: req.user, tasks: results[0] , projects: results[1] })
+      return res.render('studentProject.ejs', { user: req.user, tasks: results[0], projects: results[1] , myTasks: results[2] })
     })
 })
 
 app.get('/projectRegister/:pid', (req, res) => {
-  con.query(`select pid from student where sid = ${req.user.id}` , (err, result)=>{
+  con.query(`select pid from student where sid = ${req.user.id}`, (err, result) => {
     console.log(result[0])
-      if(result.length == 0){
-        return res.send(`you can't register to this project.`)
-      }else {
-        if(result[0].pid == null){
-          console.log("you can register")
-          return res.render('projectRegister.ejs', { user: req.user, pid: req.params.pid , result});
-        }else{
-          console.log("you cant register")
-          return res.send(`You are already registered to a project.`)
-        }
+    if (result.length == 0) {
+      return res.send(`you can't register to this project.`)
+    } else {
+      if (result[0].pid == null) {
+        console.log("you can register")
+        return res.render('projectRegister.ejs', { user: req.user, pid: req.params.pid, result });
+      } else {
+        console.log("you cant register")
+        return res.send(`You are already registered to a project.`)
       }
+    }
   })
 })
 
@@ -382,9 +397,43 @@ app.post('/projectRegister', upload.none(), (req, res) => {
 app.get('/students', (req, res) => {
   const sql = `select * from student;`;
   con.query(sql, (err, result) => {
-    res.render('students.ejs', { user: req.user , students:result})
+    return res.render('students.ejs', { user: req.user, students: result })
+  })
+
+})
+
+//managers
+app.get('/addManager/:pid', (req, res) => {
+  const sql = `select * from manager;`;
+  con.query(sql, (err, result) => {
+    return res.render('addManager.ejs', { user: req.user, managers: result, pid: req.params.pid })
   })
 })
+
+app.post('/addManager', upload.none(), (req, res) => {
+  const sql = `insert into _manager_project value(${req.body.mid}, ${req.body.pid});;`;
+  con.query(sql, (err, result) => {
+    return res.redirect('/editProject/' + req.body.pid)
+  })
+})
+
+app.get('/responsibilities/:tid', (req, res) => {
+  const sql = `select * from task join student on task.pid = student.pid where tid = ${req.params.tid};`;
+  const sql2 = `select * from _student_task join student on student.sid = _student_task.sid where ${req.params.tid};`;
+
+  con.query(sql + sql2, (err, results) => {
+    if (err) {console.log(err); return res.send('there was an error');}
+    return res.render('responsibilities.ejs', { user: req.user, students:results[0], responsibilities: results[1] , tid : req.params.tid  })
+  })
+})
+
+app.post('/responsibilities', upload.none(), (req, res) => {
+  const sql = `insert into _student_task values(${req.body.tid}, ${req.body.sid});`;
+  con.query(sql, (err, result) => {
+    return res.redirect('back')
+  })
+})
+
 
 //api
 app.get('/api', () => {
@@ -392,7 +441,7 @@ app.get('/api', () => {
 })
 
 
-app.listen(process.env.PORT, process.env.SERVER , () => {
+app.listen(process.env.PORT, process.env.SERVER, () => {
   console.log('listening on :  http://' + process.env.SERVER + ":" + process.env.PORT);
   console.log(process.env.USER)
 })

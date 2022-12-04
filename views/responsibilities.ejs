@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./_head.ejs')%>
+
+    <body>
+        
+        <%- include('./_nav.ejs')%>
+        <h1>Responsibilities:</h1>
+        Add responsibility
+        <form action="/responsibilities" enctype="multipart/form-data" method="POST">
+            <input type="hidden" name="tid" id="tid" value="<%=tid%>">
+            <select name="sid" id="sid">
+                <%students.forEach(s=>{%>
+                    <option value="<%=s.sid%>"><%=s.fullName%></option>
+                <%})%>
+            </select>
+            <input type="submit" value="add res">
+        </form><br>
+        <%if(typeof responsibilities == 'undefined' ||responsibilities.length == 0){%>
+            There is no one responsible for this task!
+        <%}else{%>
+            Students:<ul>
+            <%responsibilities.forEach(r=>{%>
+                <li><%=r.fullName%></li>
+            <%})%>
+            </ul>
+        <%}%>
+
+    </body>
+    
+</html>

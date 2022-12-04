@@ -9,10 +9,36 @@
                     <%="project not found "%>
 <%}%>
 
+<table>
+<%if (user.role == "admin"){%>
+    <h3>Managers</h3> <a href="/addManager/<%=projects[0].pid%>">Assign New Manager to Project</a>
+    <%if (typeof managers == 'undefined' || managers.length == 0){%>  
+        no managers in this project
+    <%}else{managers.forEach(m =>{%>
+        <tr>
+            <td><%= m.fullName%> </td><td style="padding-left: 10px;"> <%= m.email%></td><td style="padding-left: 10px;"><%= m.phoneNumber %> </td>
+        </tr>
+        <%})%>
+    
+    <%}%>
+<%}%>
+</table>
 
-<br>
-<br>
-<h3>Project's Info</h3>
+<br><h3>Students</h3>
+<% if (typeof students == 'undefined' ||  students.length == 0 ){%>
+    There are no students in this project yet!
+    <%}else{%>
+        <table>
+        <%students.forEach(s =>{%>
+            <tr>
+                <td><%=s.fullName%> </td><td style="padding-left: 10px;"><%=s.phoneNumber%></td><td style="padding-left: 10px;"><%=s.email%> </td>
+            </tr>
+        <br>
+    <%})%>
+    </table>
+    <%}%>
+
+    <br><h3>Info</h3>
 
 <form action="/editProject" method="POST" enctype="multipart/form-data">
     <div>
@@ -64,7 +90,7 @@
 </form>
 <h3><%=message%></h3>
 <br />
-<h3>Projects Tasks</h3>
+<h3>Tasks</h3>
 <a href="/addTask/<%=projects[0].pid%>">Add a task to this project</a>
 <% if (tasks.length == 0){%>
     <br>
@@ -81,10 +107,11 @@
         <a href="/taskStatus/<%=task.pid+"/"+task.tid%>"">- Done -</a>
     <%}%>
     <a href="/taskDelete/<%=task.pid+"/"+task.tid%>"">- Delete Task -</a>
+    <a href="/responsibilities/<%=task.tid%>"">- Responsibilities -</a>
     <br><br>
 <%})%>
 
-<h3>Project's Updates</h3>
+<h3>Updates</h3>
 <% if (updates.length == 0){%>
     <br>
     There are no updates in this project yet!

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./_head.ejs')%>
+
+    <body >
+        <%- include('./_nav.ejs')%>
+
+        <%if (typeof managers == 'undefined' || managers.length == 0){%>
+            cant find managers to add to this project
+        <%}else{
+            managers.forEach(m=>{%>
+                <li><%=m.fullName%> <form action="/addManager" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="pid" id="pid" value="<%=pid%>">
+                    <input type="hidden" name="mid" id="mid" value="<%=m.mid%>">
+                    <input type="submit" value="Assign to project">
+                    </form></li>
+            <%})%>
+            
+        <%}%>
+    </body>
+
+</html>

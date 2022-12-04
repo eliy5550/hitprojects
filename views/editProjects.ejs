@@ -11,10 +11,14 @@
 <a href="/addProject">Add Project</a>
     <%projects.forEach(p => {%>
         <li><a href="/editProject/<%=p.pid%>"><%=p.title%></a>
-            <form method="POST" action="/deleteProject" enctype="multipart/form-data">
-                <input type="hidden" id="pid" name="pid" value="<%=p.pid%>" />
-                <input type="submit" value="DELETE PROJECT" />
-            </form>
+            <%if (user.role == 'admin'){%>
+                <form method="POST" action="/deleteProject" enctype="multipart/form-data">
+                    <input type="hidden" id="pid" name="pid" value="<%=p.pid%>" />
+                    <input type="submit" value="DELETE PROJECT" />
+                </form>
+            <%}%>
+            
+
         </li><br />
         
     <%});%>

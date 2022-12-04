@@ -3,18 +3,21 @@
 <%- include('./_head.ejs')%>
 
     <body>
-        <%- include('./_nav.ejs')%>
 
-            <ul id="categories">
-
-                <%cats.forEach(c=> {%>
-                    <li>
-                        <a href="/projectsOfCategory/<%=c.categoryName%>">
-                            <%=c.categoryName%>
-                        </a>
-                    </li>
-                    <%});%>
-            </ul>
+        <div class="container">
+            <%- include('./_nav.ejs')%>
+            <h1 style="text-align:center;">Welcome to HIT's Project Center</h1>
+            <h3>Project Categories:</h3>
+                    <div class="row row-cols-3">
+                        <%cats.forEach(c=> {%>
+                                <div class="col" style='text-align: center; padding: 30px;'>
+                                    <a href="/projectsOfCategory/<%=c.categoryName%>">
+                                        <%=c.categoryName%>
+                                    </a>
+                                </div>
+                            <%});%>
+                    </div>
+        </div>
     </body>
     
 </html>
