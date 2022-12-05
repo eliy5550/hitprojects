@@ -3,27 +3,36 @@
 <%- include('./_head.ejs')%>
     <body>
 <%- include('./_nav.ejs')%>
-<ul>
-<%if (projects.length == 0){%>
-    <%="no projects "%>
-<%}%>
+<div class="container">
+    <br>
+    <br>
+    <ul>
+    <%if (projects.length == 0){%>
+        <%="no projects "%>
+    <%}%>
+    
+    <a class="btn btn-primary" href="/addProject"><h4>Create new project</h4></a><br><br>
+    <table class="table">
 
-<a href="/addProject">Add Project</a>
-    <%projects.forEach(p => {%>
-        <li><a href="/editProject/<%=p.pid%>"><%=p.title%></a>
-            <%if (user.role == 'admin'){%>
-                <form method="POST" action="/deleteProject" enctype="multipart/form-data">
-                    <input type="hidden" id="pid" name="pid" value="<%=p.pid%>" />
-                    <input type="submit" value="DELETE PROJECT" />
-                </form>
-            <%}%>
-            
+        <%projects.forEach(p => {%>
+            <tr>
+                <td><a href="/editProject/<%=p.pid%>"><h3><%=p.title%></h3></a></td>
+                <td>
+                    <%if (user.role == 'admin'){%>
+                        <form onSubmit="return confirm('This will delete the project - <%=p.title%> - FOREVER!') " method="POST" action="/deleteProject" enctype="multipart/form-data">
+                            <input type="hidden" id="pid" name="pid" value="<%=p.pid%>" />
+                            <input type="submit" value="DELETE PROJECT" />
+                        </form>
+                    <%}%>   
+                </td>
+            </tr>
+                 
+        <%});%>
+    </table>
 
-        </li><br />
-        
-    <%});%>
-</ul>
-<%- include('./_footer.ejs')%>
+    </ul>
+    <%- include('./_footer.ejs')%>
+</div>
 
 </body>
 

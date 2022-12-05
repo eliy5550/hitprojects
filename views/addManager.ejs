@@ -4,20 +4,27 @@
 
     <body >
         <%- include('./_nav.ejs')%>
+<div class="container">
+    <br><br>
+    <h3>Current Project Manager</h3>
+    <% if (typeof manager == 'undefined'||manager.length == 0){%>
+        No one is managing this project
+        <% }else{%>
+            <%= manager[0].fullName %> 
+            <%}%>
 
-        <%if (typeof managers == 'undefined' || managers.length == 0){%>
-            cant find managers to add to this project
-        <%}else{
-            managers.forEach(m=>{%>
-                <li><%=m.fullName%> <form action="/addManager" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="pid" id="pid" value="<%=pid%>">
-                    <input type="hidden" name="mid" id="mid" value="<%=m.mid%>">
-                    <input type="submit" value="Assign to project">
-                    </form></li>
+    <h1>Set Manager</h1>
+    <form action="/addManager" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="pid" id="pid" value="<%=pid%>">
+        <select name="mid" id="mid">
+            <%managers.forEach(m=>{%>
+                <option value="<%=m.mid%>"><%= m.fullName %> </option>
             <%})%>
-            
-        <%}%>
-        <%- include('./_footer.ejs')%>
+        </select> 
+        <input type="submit" value="Set">   
+    </form>
+            <%- include('./_footer.ejs')%>
+</div>
 
     </body>
 

@@ -3,128 +3,126 @@
 <%- include('./_head.ejs')%>
 
     <body>
-        <%- include('./_nav.ejs')%>
-            <ul>
-                <%if (projects.length==0){%>
-                    <%="project not found "%>
-<%}%>
+        
+        <%- include('./_nav.ejs')%> <br><br>
 
+                        <div class="container">
+                            
+                            <div class="row">
+                                <div class="col border border-primary rounded">
+                                    <h3>Info</h3>
+                                    <form action=" /editProject" method="POST" enctype="multipart/form-data">
+                                    <input type="hidden" id="pid" name="pid" value="<%=projects[0].pid%>" /><br>
+                                    <label for="title">Project Name</label>
+                                    <input required type="text" id="title" name="title" value="<%=projects[0].title%>" /><br>
+                                    <label for="description">Description</label><br>
+                                    <textarea required type="text" id="description" name="description" rows="5" col border borders="40"><%=projects[0].description%>
+                                                                </textarea><br>
+                                    Category: <select name="category" id="category">
+                                        <option value="<%=projects[0].category%>">
+                                            <%=projects[0].category%>
+                                        </option>
+                                        <%cats.forEach(c=> {%>
+                                            <option value="<%=c.categoryName%>">
+                                                <%=c.categoryName%>
+                                            </option>
+                                            <%});%>
+                                    </select><br>
+                                    <label for="start">Start Date</label>
+                                    <input type="date" id="start" name="start" value="<%=projects[0].start%>" /><br>
+                                    <label for="finish">Finish Date</label><br>
+                                    <input type="date" id="finish" name="finish" value="<%=projects[0].finish%>" /><br>
+                                    <label for="maxStudents">How many students can register</label><br>
+                                    <input required type="number" min="1" max="6" id="maxStudents" name="maxStudents"
+                                        value="<%=projects[0].maxStudents%>" />
+                                    <input type="submit" value="Update Project">
+                                                                                </form>
+                                                                    <h3>
+                                                                        <%=message%>
+                                                                    </h3>
+                                </div>
+                                <div class="col border">
+                                    <table>
+                                        <%if (user.role=="admin" ){%>
+                                            <h3>Managers</h3>
+                                            <a href="/addManager/<%=projects[0].pid%>">Assign Manager</a><br>
+                                            <%if (projects[0].projectmanager == null) {%>
+                                                No one is managing this project.
+                                            <%}%>
+                                        <%}%>
+                                    </table>
+                                </div>
+                                
+                                                    <div class="col border">
+<h3>Students</h3>
+<% if (typeof students=='undefined' || students.length==0 ){%>
+There are no students in this project yet!
+<%}else{%>
 <table>
-<%if (user.role == "admin"){%>
-    <h3>Managers</h3> <a href="/addManager/<%=projects[0].pid%>">Assign New Manager to Project</a>
-    <%if (typeof managers == 'undefined' || managers.length == 0){%>  
-        no managers in this project
-    <%}else{managers.forEach(m =>{%>
-        <tr>
-            <td><%= m.fullName%> </td><td style="padding-left: 10px;"> <%= m.email%></td><td style="padding-left: 10px;"><%= m.phoneNumber %> </td>
-        </tr>
-        <%})%>
-    
-    <%}%>
-<%}%>
-</table>
-
-<br><h3>Students</h3>
-<% if (typeof students == 'undefined' ||  students.length == 0 ){%>
-    There are no students in this project yet!
-    <%}else{%>
-        <table>
-        <%students.forEach(s =>{%>
-            <tr>
-                <td><%=s.fullName%> </td><td style="padding-left: 10px;"><%=s.phoneNumber%></td><td style="padding-left: 10px;"><%=s.email%> </td>
-            </tr>
-        <br>
-    <%})%>
-    </table>
-    <%}%>
-
-    <br><h3>Info</h3>
-
-<form action="/editProject" method="POST" enctype="multipart/form-data">
-    <div>
-        <input type="hidden" id="pid" name="pid" value="<%=projects[0].pid%>" />
-    </div>
-    <div>
-        <label for="title">Project Name</label>
-        <input required type="text" id="title" name="title" value="<%=projects[0].title%>" />
-    </div>
-    <div>
-        <label for="description">Description</label><br>
-        <textarea required 
-        type="text" 
-        id="description" 
-        name="description"
-        rows="5"
-        cols="40"
-        ><%=projects[0].description%>
-        </textarea>
-    </div>
-    <div>
-        <select name="category" id="category">
-            <option value="<%=projects[0].category%>"><%=projects[0].category%></option>
-
-            <%cats.forEach(c=> {%>
-                    <option 
-                    value="<%=c.categoryName%>"
-                    >
-                    <%=c.categoryName%>
-                    </option>
-                    <%});%>
-                </select>
-    </div>
-    <div>
-        <label for="start">Start Date</label>
-        <input type="date" id="start"  name="start" value="<%=projects[0].start%>"/>
-    </div>
-    <div>
-        <label for="finish">Finish Date</label>
-        <input type="date" id="finish"  name="finish" value="<%=projects[0].finish%>"/>
-    </div>
-    <div>
-        <label for="maxStudents">How many students can register</label>
-        <input required type="number" min="1" max="6" id="maxStudents"  name="maxStudents" value="<%=projects[0].maxStudents%>" />
-    </div>
-    <div>
-        <input type="submit" value="Update Project">
-    </div>
-</form>
-<h3><%=message%></h3>
-<br />
-<h3>Tasks</h3>
-<a href="/addTask/<%=projects[0].pid%>">Add a task to this project</a>
-<% if (tasks.length == 0){%>
-    <br>
-    There are no tasks for this project yet!
-    <br>
-    <%}%>
-<br />
-<% tasks.forEach(task=>{%>
-    task: <%= task.title%><br>
-    description: <%= task.descriptionText%><br>
-    deadline: <%= task.deadline%><br>
-    isDone: <%= task.isDone%><br>
-    <%if(task.isDone == 0){%>
-        <a href="/taskStatus/<%=task.pid+"/"+task.tid%>"">- Done -</a>
-    <%}%>
-    <a href="/taskDelete/<%=task.pid+"/"+task.tid%>"">- Delete Task -</a>
-    <a href="/responsibilities/<%=task.tid%>"">- Responsibilities -</a>
-    <br><br>
-<%})%>
-
-<h3>Updates</h3>
-<% if (updates.length == 0){%>
-    <br>
-    There are no updates in this project yet!
-    <br>
-    <%}%>
-<br />
-<% updates.forEach(u=>{%>
-    Decription: <%= u.description%><br>
-    Date: <%= u.date%><br>
-    Who Was There: <%= u.whoWasThere%><br><br>
-<%})%>
-<%- include('./_footer.ejs')%>
-
+<%students.forEach(s=>{%>
+<tr>
+<td>
+<%=s.fullName%>
+</td>
+<td style="padding-left: 10px;">
+<%=s.phoneNumber%>
+</td>
+<td style="padding-left: 10px;">
+<%=s.email%>
+</td>
+                                                                                                        </tr>
+                                                                                                        <br>
+                                                                                                        <%})%>
+                                                                                                </table>
+                                                                                                <%}%>
+                                                                                        
+                                                                                        
+                                                                                                        <%if (projects.length==0){%>
+                                                        <%="project not found "%>
+                                                                                                        <%}%>
+                                                    </div>
+                                                
+                                        <div class="col border border">
+                                            <h3>Tasks</h3>
+                                            <a href="/addTask/<%=projects[0].pid%>">Add a task to this project</a>
+                                            <% if (tasks.length==0){%>
+                                                <br>
+                                                There are no tasks for this project yet!
+                                                <br>
+                                                <%}%>
+                                                    <br />
+                                                    <% tasks.forEach(task=>{%>
+                                                        task: <%= task.title%><br>
+                                                            description: <%= task.descriptionText%><br>
+                                                                deadline: <%= task.deadline%><br>
+                                                                    isDone: <%= task.isDone%><br>
+                                                                        <%if(task.isDone==0){%>
+                                                                            <a href="/taskStatus/<%=task.pid+" /"+task.tid%>"">- Done -</a>
+                                                                            <%}%>
+                                                                                <a href="/taskDelete/<%=task.pid+" /"+task.tid%>"">- Delete
+                                                                                    Task -</a>
+                                                                                <a href="/responsibilities/<%=task.tid%>"">- Responsibilities -</a>
+                                                                <br><br>
+                                                            <%})%>
+                                        </div>
+                                
+                                                        <div class="col border border">
+                                                            <h3>Updates</h3>
+                                                            <% if (updates.length == 0){%>
+                                                                <br>
+                                                                There are no updates in this project yet!
+                                                                <br>
+                                                                <%}%>
+                                                            <br />
+                                                            <% updates.forEach(u=>{%>
+                                                                Decription: <%= u.description%><br>
+                                                                Date: <%= u.date%><br>
+                                                                Who Was There: <%= u.whoWasThere%><br><br>
+                                                            <%})%>
+                                                        </div>
+                            </div>
+                                            <%- include('./_footer.ejs')%>
+                        </div>
     </body>
 
 </html>

@@ -4,28 +4,30 @@
 
     <body>
         
-        <%- include('./_nav.ejs')%>
-        <h1>Responsibilities:</h1>
-        Add responsibility
-        <form action="/responsibilities" enctype="multipart/form-data" method="POST">
-            <input type="hidden" name="tid" id="tid" value="<%=tid%>">
-            <select name="sid" id="sid">
-                <%students.forEach(s=>{%>
-                    <option value="<%=s.sid%>"><%=s.fullName%></option>
+        <%- include('./_nav.ejs')%><br><br>
+        <div class="container">
+            <h1>Responsibilities:</h1><br>
+            Choose a student:<br><br>
+            <form action="/responsibilities" enctype="multipart/form-data" method="POST">
+                <input type="hidden" name="tid" id="tid" value="<%=tid%>">
+                <select class="form-select" name="sid" id="sid">
+                    <%students.forEach(s=>{%>
+                        <option value="<%=s.sid%>"><%=s.fullName%></option>
+                    <%})%>
+                </select><br><br>
+                <input class="btn btn-primary" type="submit" value="Add Responsibility">
+            </form><br>
+            <%if(typeof responsibilities == 'undefined' ||responsibilities.length == 0){%>
+                There is no one responsible for this task!
+            <%}else{%>
+                Students:<ul>
+                <%responsibilities.forEach(r=>{%>
+                    <li><%=r.fullName%></li>
                 <%})%>
-            </select>
-            <input type="submit" value="add res">
-        </form><br>
-        <%if(typeof responsibilities == 'undefined' ||responsibilities.length == 0){%>
-            There is no one responsible for this task!
-        <%}else{%>
-            Students:<ul>
-            <%responsibilities.forEach(r=>{%>
-                <li><%=r.fullName%></li>
-            <%})%>
-            </ul>
-        <%}%>
-        <%- include('./_footer.ejs')%>
+                </ul>
+            <%}%>
+            <%- include('./_footer.ejs')%>
+        </div>
     </body>        
 
     

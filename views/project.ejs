@@ -3,28 +3,42 @@
 <%- include('./_head.ejs')%>
     <body>
 <%- include('./_nav.ejs')%>
-<%if (projects.length == 0){%>
-    <%="no project found"%>
-<%}%>
-<h2><%=projects[0].title%></h2>
-<ul>
-    <li>description : <%=projects[0].description%></li>
-    <li>start : <%=projects[0].start%></li>
-    <li>finish : <%=projects[0].finish%></li>
-    <li>maxStudents : <%=projects[0].maxStudents%></li>
-    <% if (user.role == "student") {
-        if(user.pid == null){%>
-            <a href="/projectRegister/<%=projects[0].pid%>"><%="register to this project"%></a>
-        <%} else
-        {
-            %><%="you are already registered to a project."%><%
+<div class="container">
+    <%if (projects.length == 0){%>
+        <%="no project found"%>
+    <%}%>
+    <br>
+    <br>
+    <br>
+    <div class="row border">
+        <div class="col border">
+            <h1 style="text-align: center;"><%=projects[0].title%></h1>
+            <h3>Dates:</h3>
+            Start: <%=projects[0].start%><br>
+            Finish : <%=projects[0].finish%><br>
+            <h3>Description:</h3>
+            <textarea style="resize: none; width: 100%; height: 200px; border: none;" readonly ><%=projects[0].description%></textarea><br>
+        </div>
+        <div class="col border">
+    
+        </div>
+    </div>
+    <br><br>
+        <h1>Registration:</h1>
+        <% if (user.role == "student") {
+            if(user.pid == null){%>
+                <a href="/projectRegister/<%=projects[0].pid%>"><%="register to this project"%></a>
+            <%} else
+            {
+                %><%="you are already registered to a project."%><%
+            }
+        }else{
+            %><%="Login as a student to register to this project."%><%
         }
-    }else{
-        %><%="Login as a student to register to this project."%><%
-    }
-    %>
-</ul>
-<%- include('./_footer.ejs')%>
+        %>
+    </ul>
+    <%- include('./_footer.ejs')%>
+</div>
 
 </body>
 

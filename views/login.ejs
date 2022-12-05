@@ -1,32 +1,31 @@
-
 <!DOCTYPE html>
 <html lang="en">
-    <%- include('./_head.ejs')%>
-<body class="container">
-    <%- include('./_nav.ejs')%>
+<%- include('./_head.ejs')%>
 
+    <body >
+        <%- include('./_nav.ejs')%>
+                    <br><br><br>
+                    <div class="container">
+                        <h1 class="title">LOGIN</h1>
+                        <form action="/login" method="POST" enctype="multipart/form-data">
+                            <div>
+                                <label for="email">email</label>
+                                <input required type="email" id="email" name="email" />
+                            </div>
+                            <div>
+                                <label for="password">password</label>
+                                <input required type="password" id="password" name="password" />
+                            </div>
+                            <div>
+                                <input type="submit" value="Login" class="btn btn-primary">
+                            </div>
+                        </form>
+                                    <%if(typeof(message)!= undefined){%>
+                                        <%= message %>
+                        <%}%>
+                            <%- include('./_footer.ejs')%>
+                    </div>
 
-    <h1 class="">LOGIN</h1>
-    <form action="/login" method="POST" enctype="multipart/form-data">
-        <div>
-            <label for="email">email</label>
-            <input required type="email" id="email" name="email" />
-        </div>
-        <div> 
-            <label for="password">password</label>
-            <input required type="password" id="password" name="password" />
-        </div>
-        <div>
-        <input type="submit" value="Login" class="btn btn-primary">
-        </div>
+    </body>
 
-    </form>
-    
-    <%if(typeof(message)!= undefined){%>
-        <%= message %>
-    <%}%>
-
-    <%- include('./_footer.ejs')%>
-
-</body>
 </html>

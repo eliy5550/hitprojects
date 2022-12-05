@@ -3,20 +3,26 @@
 <%- include('./_head.ejs')%>
 
     <body>
-
         <%- include('./_nav.ejs')%>
+        <br><br>
         <div class="container">
             <h1 style="text-align:center;">Welcome to HIT's Project Center</h1>
+            <br><br>
             <h3>Project Categories:</h3>
-                    <div class="row row-cols-md-3 row-cols-1">
+            <br><br>
+                    <div class="row row-cols-lg-3 row-cols-1">
                         <%cats.forEach(c=> {%>
-                                <div class="col border" style='text-align: center; padding: 30px;'>
-                                    <a href="/projectsOfCategory/<%=c.categoryName%>">
-                                        <%=c.categoryName%>
-                                        <img class="w-100" src="<%=picpathbase%><%=c.picpath%>" >
-                                    </a>
-                                </div>
+                                
+                                <div class="card">
+                                    <img class="card-img-top" src="<%=picpathbase%><%=c.picpath%>" alt="Card image">
+                                    <div class="card-body">
+                                      <h4 class="card-title"><%=c.categoryName%></h4>
+                                      <p class="card-text"></p>
+                                      <a href="/projectsOfCategory/<%=c.categoryName%>" class="btn btn-primary">View Projects</a>
+                                    </div>
+                                  </div>
                             <%});%>
+                            
                     </div>
         </div>
         

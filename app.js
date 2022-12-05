@@ -223,7 +223,6 @@ app.post('/addProject', authenticateUser, upload.none(), async (req, res) => {
 
 app.get('/editProjects/', async (req, res) => {
   if (req.user.role == 'admin') {
-
     con.query(`select * from project`, (err, result) => {
       res.render('editProjects.ejs', { user: req.user, projects: result })
     });
@@ -231,6 +230,8 @@ app.get('/editProjects/', async (req, res) => {
     con.query(`select _manager_project.mid , _manager_project.pid , project.title , project.category from _manager_project left join project on _manager_project.pid = project.pid where mid=${req.user.id};`, (err, result) => {
       res.render('editProjects.ejs', { user: req.user, projects: result })
     });
+  }else{
+    res.redirect('/')
   }
 })
 
@@ -404,14 +405,16 @@ app.get('/students', (req, res) => {
 
 //managers
 app.get('/addManager/:pid', (req, res) => {
-  const sql = `select * from manager;`;
-  con.query(sql, (err, result) => {
-    return res.render('addManager.ejs', { user: req.user, managers: result, pid: req.params.pid })
+  const sql = 'select * from manager;'
+  const sql2 = `select * from project join manager on manager.mid = project.projectmanager where pid = ${req.params.pid};`;
+  con.query(sql + sql2, (err, results) => {
+    if(err){console.log(err); return res.send('an error accured!')}
+    return res.render('addManager.ejs', { user: req.user, managers: results[0], manager: results[1], pid: req.params.pid })
   })
 })
 
 app.post('/addManager', upload.none(), (req, res) => {
-  const sql = `insert into _manager_project value(${req.body.mid}, ${req.body.pid});;`;
+  const sql = `update project set projectmanager = '${req.body.mid}' where pid = ${req.body.pid} ;`;
   con.query(sql, (err, result) => {
     return res.redirect('/editProject/' + req.body.pid)
   })

@@ -6,16 +6,19 @@
 </head>
 <body>
     <%- include('_nav.ejs')%>
-    <h3>Students:</h3>
-    <table >
-        <td><b>Name</b></td><td style="padding: 20px;"><b>Phone</b></td><td><b>PhoneEmail</b></td>
-    <%students.forEach(s =>{%>
-            <tr>
-                <td ><%=s.fullName%> </td><td style="padding: 20px;"><%=s.phoneNumber%></td><td><%=s.email%> </td>
-            </tr>
-        <br>
-    <%})%>
-</table>
-<%- include('./_footer.ejs')%>
+    <div class="container">
+        <br><br>
+        <h1 class="primary">Students:</h1>
+        <table class="table border">
+            <td><b>Name</b></td><td><b>Phone</b></td><td><b>PhoneEmail</b></td>
+        <%students.forEach(s =>{%>
+                <tr>
+                    <td ><%=s.fullName%> </td><td style="padding-left: 20px; padding-right:20px ;"><%=s.phoneNumber%></td><td><%=s.email%> </td>
+                </tr>
+            <br>
+        <%})%>
+        </table>
+        <%- include('./_footer.ejs')%>
+    </div>
 </body>
 </html>

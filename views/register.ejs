@@ -2,38 +2,40 @@
 <html lang="en">
 <%- include('./_head.ejs')%>
 
-    <body class="container">
+    <body >
 
         <%- include('./_nav.ejs')%>
-
-
-            <h1>REGISTER</h1>
-            <form class="form-group" action="/register" method="POST" enctype="multipart/form-data">
-                <div>
-                    <label for="id">id</label>
-                    <input required maxlength="9" type="text" id="id" name="id" />
-                </div>
-                <div>
-                    <label for="fullName">Full Name</label>
-                    <input required type="text" id="fullName" name="fullName" />
-                </div>
-                <div>
-                    <label for="email">email</label>
-                    <input required type="email" id="email" name="email" />
-                </div>
-
-                <div>
-                    <label for="password">password</label>
-                    <input required type="password" id="password" name="password" />
-                </div>
-                <div>
-                    <label for="phoneNumber">phoneNumber</label>
-                    <input required type="text" id="phoneNumber" maxlength="30" name="phoneNumber" />
-                </div>
-                <div>
-                    <input type="submit" value="Register" class="btn btn-primary">
-                </div>
-            </form>
+<div class="container">
+    
+    
+                <h1>REGISTER</h1>
+                <form class="form-group" action="/register" method="POST" enctype="multipart/form-data">
+                    <div>
+                        <label for="id">id</label>
+                        <input required maxlength="9" type="text" id="id" name="id" />
+                    </div>
+                    <div>
+                        <label for="fullName">Full Name</label>
+                        <input required type="text" id="fullName" name="fullName" />
+                    </div>
+                    <div>
+                        <label for="email">email</label>
+                        <input required type="email" id="email" name="email" />
+                    </div>
+    
+                    <div>
+                        <label for="password">password</label>
+                        <input required type="password" id="password" name="password" />
+                    </div>
+                    <div>
+                        <label for="phoneNumber">phoneNumber</label>
+                        <input required type="text" id="phoneNumber" maxlength="30" name="phoneNumber" />
+                    </div>
+                    <div>
+                        <input type="submit" value="Register" class="btn btn-primary">
+                    </div>
+                </form>
+</div>
 
 
             <%- include('./_footer.ejs')%>
