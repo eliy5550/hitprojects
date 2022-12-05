@@ -14,6 +14,6 @@ select * from task join student on task.pid = student.pid where tid = 1;
 
 update student set pid=17 where sid = 2;
 
-select * from _student_task join task where task.tid = _student_task.tid
+select * from _student_task join task on task.tid = _student_task.tid where sid =1
 
 

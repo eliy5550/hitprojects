@@ -95,7 +95,7 @@ app.all('*', authenticateUser);
 app.get('/', async (req, res) => {
   await con.query('select * from projectcategories;', (err, result) => {
     if (err) console.log(err)
-    return res.render('index.ejs', { user: req.user, cats: result })
+    return res.render('index.ejs', { user: req.user, cats: result , picpathbase: path.join('/images' , "categories" , '/') })
   })
 })
 
@@ -133,7 +133,7 @@ app.post('/login', upload.none(), (req, res) => {
   console.log(`data received : ${req.body.email} ${req.body.password}`);
   req.body.password = bcrypt.hashSync(req.body.password, process.env.PASSWORD_SECRET)
   //are u a student
-  const sql1 = `select * from admins WHERE email="${req.body.email}" and pass="${req.body.password}";`;
+  const sql1 = `select * from admins  WHERE email="${req.body.email}" and pass="${req.body.password}";`;
   const sql2 = `select * from manager WHERE email="${req.body.email}" and pass="${req.body.password}";`;
   const sql3 = `select * from student WHERE email="${req.body.email}" and pass="${req.body.password}";`;
 

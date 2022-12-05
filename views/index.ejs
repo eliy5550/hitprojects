@@ -4,15 +4,16 @@
 
     <body>
 
+        <%- include('./_nav.ejs')%>
         <div class="container">
-            <%- include('./_nav.ejs')%>
             <h1 style="text-align:center;">Welcome to HIT's Project Center</h1>
             <h3>Project Categories:</h3>
-                    <div class="row row-cols-3">
+                    <div class="row row-cols-md-3 row-cols-1">
                         <%cats.forEach(c=> {%>
-                                <div class="col" style='text-align: center; padding: 30px;'>
+                                <div class="col border" style='text-align: center; padding: 30px;'>
                                     <a href="/projectsOfCategory/<%=c.categoryName%>">
                                         <%=c.categoryName%>
+                                        <img class="w-100" src="<%=picpathbase%><%=c.picpath%>" >
                                     </a>
                                 </div>
                             <%});%>
