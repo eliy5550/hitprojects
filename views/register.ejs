@@ -2,12 +2,13 @@
 <html lang="en">
 <%- include('./_head.ejs')%>
 
-    <body>
+    <body class="container">
 
         <%- include('./_nav.ejs')%>
 
+
             <h1>REGISTER</h1>
-            <form action="/register" method="POST" enctype="multipart/form-data">
+            <form class="form-group" action="/register" method="POST" enctype="multipart/form-data">
                 <div>
                     <label for="id">id</label>
                     <input required maxlength="9" type="text" id="id" name="id" />
@@ -30,7 +31,7 @@
                     <input required type="text" id="phoneNumber" maxlength="30" name="phoneNumber" />
                 </div>
                 <div>
-                    <input type="submit" value="Register">
+                    <input type="submit" value="Register" class="btn btn-primary">
                 </div>
             </form>
 

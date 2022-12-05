@@ -1,21 +1,31 @@
 
 <div class="container">
-  
-  <div class="navbar" style="padding: 20px;">
-            <div class="col"><a class="navbar-brand" href="/">HOME</a></div>
-            <%if(user.role=='admin' ){%>
-              <%- include('./_admin_nav.ejs')%>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Hit Projects</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+
+        <%if(user.role=='admin' ){%>
+          <%- include('./_admin_nav.ejs')%>
+          <%}%>
+          <%if(user.role=='manager' ){%>
+            <%- include('./_manager_nav.ejs')%>
+            <%}%>
+            <% if(user.role=='student' ){%>
+              <%- include('./_student_nav.ejs')%>
               <%}%>
-              <%if(user.role=='manager' ){%>
-                <%- include('./_manager_nav.ejs')%>
+              <% if(user.role=='guest' ){%>
+                <a class="nav-item nav-link active" href="/login">Login<span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link active" href="/register">Register<span class="sr-only">(current)</span></a>
                 <%}%>
-                <% if(user.role=='student' ){%>
-                  <%- include('./_student_nav.ejs')%>
-                  <%}%>
-                  <% if(user.role=='guest' ){%>
-                    <div class="col"><a  href="/login">login</a></div>
-                    <div class="col"><a  href="/register">register</a></div>
-                    <%}%>
-                    Role: <%= user.role %>
-          </div>
+                <a class="nav-item nav-link active" href="">Role: <%= user.role %><span class="sr-only">(current)</span></a>
+                
+      </div>
+    </div>
+  </nav>
+  
+
 </div>
