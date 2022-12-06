@@ -4,7 +4,12 @@
     <body>
         <%- include('./_nav.ejs')%>
         <div class="container">
-            <h1>My Project:</h1><h2><p ><%=projects[0].title%>  </p></h2><a href="/project/<%=projects[0].pid%>"> - Go to public project page</a><br><br><br>
+            <%if(typeof projects[0] != 'undefined'){%>
+                <h1>My Project:</h1>
+            <h2><p ><%=projects[0].title%>  </p></h2>
+            <a href="/project/<%=projects[0].pid%>"> - Go to public project page</a><br><br><br>
+
+
             <h3>Tasks for You</h3>
             <%if(myTasks.length == 0){%>
                 There are no tasks assigned specifically to you.
@@ -17,8 +22,8 @@
                 <%if(task.isDone == 0){%>
                     <a href="/taskStatus/<%=task.pid+"/"+task.tid%>"">- Done -</a><br><br>
                 <%}%>
-            <%})%>
-            <br><br><br>
+            <%})%><br><br><br>
+
 
             <h3>All Tasks</h3>
             <%if(tasks.length == 0){%>
@@ -33,6 +38,7 @@
                     <a href="/taskStatus/<%=task.pid+"/"+task.tid%>"">- Done -</a><br><br>
                 <%}%>
             <%})%>
+            <%}%>
         </div>
         <%- include('./_footer.ejs')%>
     </body>
