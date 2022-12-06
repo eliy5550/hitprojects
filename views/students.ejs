@@ -8,12 +8,20 @@
     <%- include('_nav.ejs')%>
     <div class="container">
         <br><br>
-        <h1 class="primary">Students:</h1>
+        <h1 >Students:</h1>
         <table class="table border">
-            <td><b>Name</b></td><td><b>Phone</b></td><td><b>PhoneEmail</b></td>
+            <tr>
+                <td><b>Name</b></td>
+                <td><b>Phone</b></td>
+                <td><b>PhoneEmail</b></td>
+                <td><b>project ID</b></td>
+            </tr>
         <%students.forEach(s =>{%>
                 <tr>
-                    <td ><%=s.fullName%> </td><td style="padding-left: 20px; padding-right:20px ;"><%=s.phoneNumber%></td><td><%=s.email%> </td>
+                    <td ><%=s.fullName%> </td>
+                    <td style=""><%=s.phoneNumber%></td>
+                    <td><%=s.email%></td>
+                    <td><%=s.pid%></td>
                 </tr>
             <br>
         <%})%>

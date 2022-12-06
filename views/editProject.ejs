@@ -9,7 +9,7 @@
                         <div class="container">
                             
                             <div class="row">
-                                <div class="col border border-primary rounded">
+                                <div class="col-md-6 border border-primary rounded">
                                     <h3>Info</h3>
                                     <form action=" /editProject" method="POST" enctype="multipart/form-data">
                                     <input type="hidden" id="pid" name="pid" value="<%=projects[0].pid%>" /><br>
@@ -41,19 +41,19 @@
                                                                         <%=message%>
                                                                     </h3>
                                 </div>
-                                <div class="col border">
-                                    <table>
-                                        <%if (user.role=="admin" ){%>
+                                <%if (user.role=="admin" ){%>
+                                    <div class="col border">
+                                        <table>
                                             <h3>Managers</h3>
                                             <a href="/addManager/<%=projects[0].pid%>">Assign Manager</a><br>
                                             <%if (projects[0].projectmanager == null) {%>
                                                 No one is managing this project.
                                             <%}%>
+                                        </table>
+                                    </div>
                                         <%}%>
-                                    </table>
-                                </div>
                                 
-                                                    <div class="col border">
+<div class="col-md-6   border">
 <h3>Students</h3>
 <% if (typeof students=='undefined' || students.length==0 ){%>
 There are no students in this project yet!

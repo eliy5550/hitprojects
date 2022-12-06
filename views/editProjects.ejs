@@ -12,19 +12,32 @@
     <%}%>
     
     <a class="btn btn-primary" href="/addProject"><h4>Create new project</h4></a><br><br>
-    <table class="table">
-
+    <table class="table border">
+        <tr style="background-color: rgb(125, 255, 170);">
+            <td><b>Title</b></a></td>
+            <td><b>Description</b></td>
+            <%if (user.role == 'admin') {%> <td>DELETE</td> <%}%>
+            <td>START</td>
+            <td>FINISH</td>
+            <td>Max Students</td>
+        </tr>
         <%projects.forEach(p => {%>
             <tr>
-                <td><a href="/editProject/<%=p.pid%>"><h3><%=p.title%></h3></a></td>
-                <td>
+                <td><a href="/editProject/<%=p.pid%>"><p><%=p.title%></p></a></td>
+                <td><textarea style="resize: none; height: 30px;" readonly><%=p.description%></textarea></td>
+                
                     <%if (user.role == 'admin'){%>
+                        <td>
                         <form onSubmit="return confirm('This will delete the project - <%=p.title%> - FOREVER!') " method="POST" action="/deleteProject" enctype="multipart/form-data">
                             <input type="hidden" id="pid" name="pid" value="<%=p.pid%>" />
                             <input type="submit" value="DELETE PROJECT" />
                         </form>
+                    </td>
                     <%}%>   
-                </td>
+               
+                <td><%=p.start%></td>
+                <td><%=p.finish%></td>
+                <td><%=p.maxStudents%></td>
             </tr>
                  
         <%});%>

@@ -4,28 +4,31 @@
 <body>
     <%- include('./_nav.ejs')%>
     
-    <%if(students[0].pid != null){%>
-        <a href="/myProject"><h2>My Project</h2></a><br>
-    <%}%>
+    <div class="container">
+        <br><br>
+        <h1>My Profile</h1><br>
 
-    <form action="/editStudent" method="POST" enctype="multipart/form-data">
-        <input required value="<%=students[0].sid%>" type="hidden" id="sid" name="sid" />
-        <div>
-            <label for="id">id number:</label>
-            <input required value="<%=students[0].id%>" maxlength="9" type="text" id="id" name="id" />
-        </div>
-        <div>
-            <label for="fullName">Full Name</label>
-            <input required value="<%=students[0].fullName%>" type="text" id="fullName" name="fullName" />
-        </div>
-        <div>
-            <label for="phoneNumber">phoneNumber</label>
-            <input required  value="<%=students[0].phoneNumber%>" type="text" id="phoneNumber" maxlength="30" name="phoneNumber" />
-        </div>
-        <div>
-            <input type="submit" value="Edit Profile">
-        </div>
-    </form>
+        <%if(students[0].pid != null){%>
+            <%}%>
+        <form action="/editStudent" method="POST" enctype="multipart/form-data">
+            <input required value="<%=students[0].sid%>" type="hidden" id="sid" name="sid" />
+            <div class="col">
+                <label for="id">id number:</label>
+                <input required value="<%=students[0].id%>" maxlength="9" type="text" id="id" name="id" />
+            </div>
+            <div class="col">
+                <label for="fullName">Full Name</label>
+                <input required value="<%=students[0].fullName%>" type="text" id="fullName" name="fullName" />
+            </div>
+            <div class="col">
+                <label for="phoneNumber">phoneNumber</label>
+                <input required  value="<%=students[0].phoneNumber%>" type="text" id="phoneNumber" maxlength="30" name="phoneNumber" />
+            </div>
+            <div><br>
+                <input type="submit" value="Edit Profile">
+            </div>
+        </form>
+    </div>
     <%- include('./_footer.ejs')%>
 
 </body>

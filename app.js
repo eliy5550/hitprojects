@@ -11,7 +11,8 @@ const fs = require('fs');
 const { checkPrimeSync } = require('crypto');
 const { env } = require('process');
 const { Console } = require('console');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const { resolveSoa } = require('dns');
 
 
 const app = express()
@@ -95,7 +96,7 @@ app.all('*', authenticateUser);
 app.get('/', async (req, res) => {
   await con.query('select * from projectcategories;', (err, result) => {
     if (err) console.log(err)
-    return res.render('index.ejs', { user: req.user, cats: result , picpathbase: path.join('/images' , "categories" , '/') })
+    return res.render('index.ejs', { user: req.user, cats: result, picpathbase: path.join('/images', "categories", '/') })
   })
 })
 
@@ -227,10 +228,11 @@ app.get('/editProjects/', async (req, res) => {
       res.render('editProjects.ejs', { user: req.user, projects: result })
     });
   } else if (req.user.role == 'manager') {
-    con.query(`select _manager_project.mid , _manager_project.pid , project.title , project.category from _manager_project left join project on _manager_project.pid = project.pid where mid=${req.user.id};`, (err, result) => {
+    con.query(`select * from project where projectmanager=${req.user.id};`, (err, result) => {
+      if(err){ console.log(err); return res.send('there was an error')}
       res.render('editProjects.ejs', { user: req.user, projects: result })
     });
-  }else{
+  } else {
     res.redirect('/')
   }
 })
@@ -245,10 +247,10 @@ app.get('/editProject/:pid', upload.none(), (req, res) => {
   const sql5 = `select _manager_project.pid , manager.mid, manager.fullName , manager.email , manager.phoneNumber from _manager_project join manager on _manager_project.mid = manager.mid where pid = ${req.params.pid}; `
   const sql6 = `select * from student where pid = ${req.params.pid}; `
 
-  con.query(sql + sql2 + sql3 + sql4 + sql5+ sql6, (err, results) => {
+  con.query(sql + sql2 + sql3 + sql4 + sql5 + sql6, (err, results) => {
 
     if (err) res.send(err)
-    res.render('editProject.ejs', { message: "", user: req.user, projects: results[0], cats: results[1], tasks: results[2], updates: results[3], managers: results[4] , students: results[5] })
+    res.render('editProject.ejs', { message: "", user: req.user, projects: results[0], cats: results[1], tasks: results[2], updates: results[3], managers: results[4], students: results[5] })
   })
 })
 
@@ -362,11 +364,11 @@ app.get('/myProject', (req, res) => {
   const sql = `select * from student inner join project on student.pid = project.pid inner join task on project.pid = task.pid where sid = ${req.user.id};`;
   const sql1 = `select * from student inner join project on student.pid = project.pid where sid=${req.user.id};`
   const sql2 = `select * from _student_task join task on task.tid = _student_task.tid where sid =${req.user.id}`
-  con.query(sql + sql1 + sql2  ,
+  con.query(sql + sql1 + sql2,
     (err, results) => {
-      if (err) {console.log(err); return res.send("there was an error");  }
+      if (err) { console.log(err); return res.send("there was an error"); }
       console.log(results[0])
-      return res.render('studentProject.ejs', { user: req.user, tasks: results[0], projects: results[1] , myTasks: results[2] })
+      return res.render('studentProject.ejs', { user: req.user, tasks: results[0], projects: results[1], myTasks: results[2] })
     })
 })
 
@@ -377,10 +379,8 @@ app.get('/projectRegister/:pid', (req, res) => {
       return res.send(`you can't register to this project.`)
     } else {
       if (result[0].pid == null) {
-        console.log("you can register")
         return res.render('projectRegister.ejs', { user: req.user, pid: req.params.pid, result });
       } else {
-        console.log("you cant register")
         return res.send(`You are already registered to a project.`)
       }
     }
@@ -388,10 +388,33 @@ app.get('/projectRegister/:pid', (req, res) => {
 })
 
 app.post('/projectRegister', upload.none(), (req, res) => {
-  con.query(`update student set pid = ${req.body.pid} where sid = ${req.user.id}`, (err, result) => {
-    if (err) throw err;
-    res.send("<h1>Registered!</h1><br><h2>This project's manager will set up a meeting at the beginning of the semester. Please be patient. <a href='/'></a></h2>")
+  const sql1 = `select count(*) as count from student where pid =  ${req.body.pid};`
+  const sql2 = `select maxStudents from project where pid =  ${req.body.pid};`
+  const sql3 = `update student set pid = ${req.body.pid} where sid = ${req.user.id}`
+
+  con.query(sql1 + sql2, (err, results) => {
+    if (err || !results[1][0]) {
+      console.log(err); return res.send('there was an error..')
+    }
+    const amountOfUsers = results[0][0].count;
+    const maxStudents = results[1][0].maxStudents;
+
+    if (amountOfUsers >= maxStudents) {
+      return res.send('You did not register... <br> This project is FULL!')
+    }
+
+    con.query(sql3, (err, result) => {
+      if (err) { console.log(err); return res.send('there was an error') }
+      return res.send("<h1>Registered!</h1><br><h2>This project's manager will set up a meeting at the beginning of the semester. Please be patient. <a href='/'>BACK</a></h2>")
+    })
+
+
   })
+
+  // con.query(sql1 , (err, result) => {
+  //   if (err) throw err;
+  //   res.send("<h1>Registered!</h1><br><h2>This project's manager will set up a meeting at the beginning of the semester. Please be patient. <a href='/'></a></h2>")
+  // })
 })
 
 //students
@@ -408,7 +431,7 @@ app.get('/addManager/:pid', (req, res) => {
   const sql = 'select * from manager;'
   const sql2 = `select * from project join manager on manager.mid = project.projectmanager where pid = ${req.params.pid};`;
   con.query(sql + sql2, (err, results) => {
-    if(err){console.log(err); return res.send('an error accured!')}
+    if (err) { console.log(err); return res.send('an error accured!') }
     return res.render('addManager.ejs', { user: req.user, managers: results[0], manager: results[1], pid: req.params.pid })
   })
 })
@@ -425,8 +448,8 @@ app.get('/responsibilities/:tid', (req, res) => {
   const sql2 = `select * from _student_task join student on student.sid = _student_task.sid where ${req.params.tid};`;
 
   con.query(sql + sql2, (err, results) => {
-    if (err) {console.log(err); return res.send('there was an error');}
-    return res.render('responsibilities.ejs', { user: req.user, students:results[0], responsibilities: results[1] , tid : req.params.tid  })
+    if (err) { console.log(err); return res.send('there was an error'); }
+    return res.render('responsibilities.ejs', { user: req.user, students: results[0], responsibilities: results[1], tid: req.params.tid })
   })
 })
 
