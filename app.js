@@ -188,10 +188,14 @@ app.post('/register', upload.none(), (req, res) => {
   con.query(`
   insert into student  (id,fullName,pass,email,phoneNumber ) 
   values("${req.body.id}"  ,"${req.body.fullName}"  , 
-    "${req.body.password}" ,"${req.body.email}"  , "${req.body.phoneNumber}" );
-  ` , (err) => {
-    if (err) res.status(400).render("register.ejs", { user: req.user, message: "something went wrong with your registration." })
-    res.status(201).render('login.ejs', { user: req.user, message: "SUCCESSFULLY REGISTERED!" })
+    "${req.body.password}" ,"${req.body.email}"  , "${req.body.phoneNumber}" );` , 
+  (err) => {
+    if (err) {
+      if (err.code == 'ER_DUP_ENTRY') {console.log('ER_DUP_ENTRY') ;return res.status(400).render("register.ejs", { user: req.user, message: "Email already exists." })}
+      console.log(err.code) ;
+      return res.status(400).render("register.ejs", { user: req.user, message: "something went wrong with your registration." })
+    }
+    return res.status(201).render('login.ejs', { user: req.user, message: "SUCCESSFULLY REGISTERED!" })
   });
 })
 
