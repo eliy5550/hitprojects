@@ -38,6 +38,9 @@
                     <a href="/taskStatus/<%=task.pid+"/"+task.tid%>"">- Done -</a><br><br>
                 <%}%>
             <%})%>
+            <%}else{%>
+                <h3>You are not registered to a project yet.</h3>
+                <p>Please choose a project from <a href="/">HERE</a> ... </p>
             <%}%>
         </div>
         <%- include('./_footer.ejs')%>
