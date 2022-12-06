@@ -6,12 +6,17 @@
 <div class="container">
     <br>
     <br>
+    Admins can edit everything...
+    <br>
+    Managers can only edit projects that the Admins assigned to them! You can see them below... 
     <ul>
     <%if (projects.length == 0){%>
-        <%="no projects "%>
+         no projects <br>
     <%}%>
-    
-    <a class="btn btn-primary" href="/addProject">Create new project</a><br><br>
+    <br><br> 
+    <%if (user.role == 'admin') {%>     <a class="btn btn-primary" href="/addProject">Create new project</a><br><br>
+    <%}%>
+
     <table class="table border">
         <tr style="background-color: rgb(125, 255, 170);">
             <td><b>Title</b></a></td>
