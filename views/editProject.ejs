@@ -9,14 +9,14 @@
                         <div class="container">
                             
                             <div class="row">
-                                <div class="col-md-6 border border-primary rounded">
+                                <div class="col-md-6 border rounded">
                                     <h3>Info</h3>
                                     <form action=" /editProject" method="POST" enctype="multipart/form-data">
                                     <input type="hidden" id="pid" name="pid" value="<%=projects[0].pid%>" /><br>
                                     <label for="title">Project Name</label>
                                     <input required type="text" id="title" name="title" value="<%=projects[0].title%>" /><br>
                                     <label for="description">Description</label><br>
-                                    <textarea required type="text" id="description" name="description" rows="5" col border borders="40"><%=projects[0].description%>
+                                    <textarea required type="text" id="description" name="description" rows="5" cols="50"><%=projects[0].description%>
                                                                 </textarea><br>
                                     Category: <select name="category" id="category">
                                         <option value="<%=projects[0].category%>">
@@ -41,17 +41,7 @@
                                                                         <%=message%>
                                                                     </h3>
                                 </div>
-                                <%if (user.role=="admin" ){%>
-                                    <div class="col border">
-                                        <table>
-                                            <h3>Managers</h3>
-                                            <a href="/addManager/<%=projects[0].pid%>">Assign Manager</a><br>
-                                            <%if (projects[0].projectmanager == null) {%>
-                                                No one is managing this project.
-                                            <%}%>
-                                        </table>
-                                    </div>
-                                        <%}%>
+
                                 
 <div class="col-md-6   border">
 <h3>Students</h3>
@@ -96,8 +86,17 @@ There are no students in this project yet!
                                                         <%="project not found "%>
                                                                                                         <%}%>
                                                     </div>
-                                                
-                                        <div class="col border border">
+                                                    <%if (user.role=="admin" ){%>
+                                                        <div class="col border">
+                                                            <table>                                                                <h3>Managers</h3>
+                                                                <a href="/addManager/<%=projects[0].pid%>">Assign Manager</a><br>
+                                                                <%if (projects[0].projectmanager == null) {%>
+                                                                    No one is managing this project.
+                                                                <%}%>
+                                                            </table>
+                                                        </div>
+                                                            <%}%>
+                                        <div class="col border">
                                             <h3>Tasks</h3>
                                             <a href="/addTask/<%=projects[0].pid%>">Add a task to this project</a>
                                             <% if (tasks.length==0){%>
@@ -121,7 +120,7 @@ There are no students in this project yet!
                                                             <%})%>
                                         </div>
                                 
-                                                        <div class="col border border">
+                                                        <div class="col border">
                                                             <h3>Updates</h3>
                                                             <% if (updates.length == 0){%>
                                                                 <br>

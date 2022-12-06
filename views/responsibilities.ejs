@@ -7,7 +7,7 @@
         <%- include('./_nav.ejs')%><br><br>
         <div class="container">
             <h1>Responsibilities:</h1><br>
-            Choose a student:<br><br>
+            Choose a student, you can only see students who are registered to this project:<br><br>
             <form action="/responsibilities" enctype="multipart/form-data" method="POST">
                 <input type="hidden" name="tid" id="tid" value="<%=tid%>">
                 <select class="form-select" name="sid" id="sid">
@@ -22,11 +22,29 @@
             <%if(typeof responsibilities == 'undefined' ||responsibilities.length == 0){%>
                 There is no one responsible for this task.
             <%}else{%>
-                Students:<ul>
+                Students:<table class="table border">
+                    <tr>
+                        <td>
+                            Name
+                        </td>
+                        <td>
+                            Remove
+                        </td>
+                    </tr>
                 <%responsibilities.forEach(r=>{%>
-                    <li><%=r.fullName%></li>
+                    <tr>
+                    <td><%=r.fullName%></td>
+                        <td>
+                            <form method="post" action="/removeResponsibility" enctype="multipart/form-data">
+                                <input type="hidden" name="tid" id="tid" value="<%=r.tid%>">
+                                <input type="hidden" name="sid" id="sid" value="<%=r.sid%>">
+                                <input type="submit" value="Remove Responsibility" class="btn btn-danger">
+                            </form>
+                        </td>
+                        <br>
+                    </tr>
                 <%})%>
-                </ul>
+                </table>
             <%}%>
             <%- include('./_footer.ejs')%>
         </div>

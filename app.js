@@ -489,6 +489,15 @@ app.post('/removeStudentFromProject', upload.none(), (req, res) => {
 })
 
 
+app.post('/removeResponsibility', upload.none(), (req, res) => {
+  const sql = `delete from _student_task where tid= ${req.body.tid} and sid=${req.body.sid};`
+  con.query(sql , (err , result)=>{
+    if(err){console.log(err); return res.send('An error accured!')}
+    return res.redirect('back');
+  })
+})
+
+
 
 
 //api
