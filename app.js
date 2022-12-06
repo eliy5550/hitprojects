@@ -191,7 +191,7 @@ app.post('/register', upload.none(), (req, res) => {
     "${req.body.password}" ,"${req.body.email}"  , "${req.body.phoneNumber}" );` , 
   (err) => {
     if (err) {
-      if (err.code == 'ER_DUP_ENTRY') {console.log('ER_DUP_ENTRY') ;return res.status(400).render("register.ejs", { user: req.user, message: "Email already exists." })}
+      if (err.code == 'ER_DUP_ENTRY') {console.log('ER_DUP_ENTRY') ; return res.status(400).render("register.ejs", { user: req.user, message: "Email already exists." })}
       console.log(err.code) ;
       return res.status(400).render("register.ejs", { user: req.user, message: "something went wrong with your registration." })
     }
@@ -463,6 +463,32 @@ app.post('/responsibilities', upload.none(), (req, res) => {
     return res.redirect('back')
   })
 })
+
+app.get('/addStudent/:pid', (req, res) => {
+  const sql = `select * from student`;
+  con.query(sql , (err, result) => {
+    if (err) { console.log(err); return res.send('there was an error'); }
+    return res.render('addStudent.ejs', { user: req.user,students:result , pid:req.params.pid })
+  })
+})
+
+app.post('/addStudent/',upload.none(), (req, res) => {
+  const sql = `update student set pid = ${req.body.pid} where sid = ${req.body.sid};`
+  con.query(sql , (err , result)=>{
+    if(err){console.log(err); return res.send('An error accured!')}
+    return res.redirect('back');
+  })
+})
+
+app.post('/removeStudentFromProject', upload.none(), (req, res) => {
+  const sql = `update student set pid = null where sid = ${req.body.sid};`
+  con.query(sql , (err , result)=>{
+    if(err){console.log(err); return res.send('An error accured!')}
+    return res.redirect('back');
+  })
+})
+
+
 
 
 //api

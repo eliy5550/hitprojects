@@ -15,10 +15,12 @@
                         <option value="<%=s.sid%>"><%=s.fullName%></option>
                     <%})%>
                 </select><br><br>
-                <input class="btn btn-primary" type="submit" value="Add Responsibility">
+                <%if (students.length != 0 ){%>
+                    <input class="btn btn-primary" type="submit" value="Add Responsibility">
+                <%}else{%>No students are registered to this project.<%}%>
             </form><br>
             <%if(typeof responsibilities == 'undefined' ||responsibilities.length == 0){%>
-                There is no one responsible for this task!
+                There is no one responsible for this task.
             <%}else{%>
                 Students:<ul>
                 <%responsibilities.forEach(r=>{%>

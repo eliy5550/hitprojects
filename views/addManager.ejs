@@ -6,24 +6,27 @@
         <%- include('./_nav.ejs')%>
 <div class="container">
     <br><br>
-    <h3>Current Project Manager</h3>
-    <% if (typeof manager == 'undefined'||manager.length == 0){%>
-        No one is managing this project
-        <% }else{%>
-            <%= manager[0].fullName %> 
-            <%}%>
-
+    
     <h1>Set Manager</h1>
     <form action="/addManager" method="post" enctype="multipart/form-data">
         <input type="hidden" name="pid" id="pid" value="<%=pid%>">
         <select name="mid" id="mid">
             <%managers.forEach(m=>{%>
                 <option value="<%=m.mid%>"><%= m.fullName %> </option>
-            <%})%>
+                <%})%>
         </select> 
         <input type="submit" value="Set">   
     </form>
-            <%- include('./_footer.ejs')%>
+
+    <br><br>
+
+    <h3>Current Project Manager</h3>
+    <% if (typeof manager == 'undefined'||manager.length == 0){%>
+        No one is managing this project
+        <% }else{%>
+            <%= manager[0].fullName %> 
+            <%}%>
+    <%- include('./_footer.ejs')%>
 </div>
 
     </body>

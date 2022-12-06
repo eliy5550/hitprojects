@@ -55,21 +55,36 @@
                                 
 <div class="col-md-6   border">
 <h3>Students</h3>
+<a href="/addStudent/<%=projects[0].pid%>">Add Student</a><br>
 <% if (typeof students=='undefined' || students.length==0 ){%>
 There are no students in this project yet!
 <%}else{%>
-<table>
+    <table class="table">
+    <td>
+<b>name</b>         </td>
+        <td style="">
+  <b>phone</b>      </td>
+        <td style="">
+ <b>email</b>       </td>
+ <td style="">
+    <b>REMOVE</b>       </td>
 <%students.forEach(s=>{%>
 <tr>
 <td>
 <%=s.fullName%>
 </td>
-<td style="padding-left: 10px;">
+<td style="">
 <%=s.phoneNumber%>
 </td>
-<td style="padding-left: 10px;">
+<td style="">
 <%=s.email%>
 </td>
+<td style="">
+    <form onsubmit="return confirm('This action will remove this student from the project!')" action="/removeStudentFromProject" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="sid" id="sid" value="<%=s.sid%>">
+        <input  class="btn btn-danger" type="submit" value="REMOVE STUDENT">
+    </form>
+    </td>
                                                                                                         </tr>
                                                                                                         <br>
                                                                                                         <%})%>

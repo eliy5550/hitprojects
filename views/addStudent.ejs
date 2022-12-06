@@ -1,0 +1,30 @@
+<%- include('_start.ejs') %> 
+
+<h1>Choose student</h1>
+
+<table class="table border">
+    <tr>
+        <td><b>Name</b></td>
+        <td><b>Phone</b></td>
+        <td><b>PhoneEmail</b></td>
+        <td><b>project ID</b></td>
+    </tr>
+<%students.forEach(s =>{%>
+        <tr>
+            <td ><%=s.fullName%> </td>
+            <td ><%=s.phoneNumber%></td>
+            <td><%=s.email%></td>
+            <td><%=s.pid%></td>
+            <td>
+                <form enctype="multipart/form-data" action="/addStudent" method="post">
+                    <input type="hidden" name="pid" id="pid" value="<%=pid%>">
+                    <input type="hidden" name="sid" id="sid" value="<%=s.sid%>">
+                    <input class="btn btn-primary" type="submit" value="ASSIGN STUDENT TO PROJECT">
+                </form>    
+            </td>
+        </tr>
+    <br>
+<%})%>
+</table>
+
+<%- include('_finish.ejs') %> 
