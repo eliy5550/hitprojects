@@ -18,7 +18,18 @@ const { resolveSoa } = require('dns');
 const app = express()
 
 app.use(express.static('public'))
-const upload = multer({ dest: 'uploads/' })
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/images/onepagers')
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname))
+  }
+})
+
+const upload = multer({ storage: storage })
 
 // app.use(session({
 //   secret: "123 123",
@@ -116,9 +127,14 @@ app.get('/projectsOfCategory/:cat', async (req, res) => {
 })
 
 app.get('/project/:pid', async (req, res) => {
-  await con.query(`select * from project where pid='${req.params.pid}'`, (err, result) => {
+  await con.query(`select * from project left join manager on project.projectmanager = manager.mid where project.pid=${req.params.pid};`, (err, result) => {
     if (err) res.redirect("404.ejs");
-    res.render('project.ejs', { user: req.user, projects: result })
+    var onepagerpath = path.join('/images' , 'onepagers' , 'defaultonepager.jpg');
+    if(result[0].onepagerpath != null){
+      onepagerpath= path.join('/images' , 'onepagers' , result[0].onepagerpath)
+    }
+    console.log(onepagerpath)
+    res.render('project.ejs', { user: req.user, projects: result , onepagerpath: onepagerpath})
   });
 })
 
@@ -498,12 +514,25 @@ app.post('/removeResponsibility', upload.none(), (req, res) => {
 })
 
 
+app.get('/onepager/:pid', (req, res) => {
+  res.render('onepager.ejs', { user: req.user , pid: req.params.pid})
+})
 
+app.post('/onepager/', upload.single('file') ,(req, res) => {
+  //res.send(`name  ${req.file.filename}, size ${req.file.size}, mime  ${req.file.mimetype}, dest ${req.file.destination}`)
+  const sql = `update project set onepagerpath = "${req.file.filename}" where pid = ${req.body.pid}`
+  con.query(sql , (err)=>{
+    if(err){console.log(err) ; return res.send('there was an error!')}
+    return res.send('ok!')
+  })
+})
 
 //api
 app.get('/api', () => {
   res.status(200).json({ message: "hi" })
 })
+
+
 
 
 app.listen(process.env.PORT, process.env.SERVER, () => {

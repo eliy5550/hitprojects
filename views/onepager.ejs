@@ -1,0 +1,20 @@
+<%-include('./_start.ejs')%>
+<h1 style="padding: 30px;">Update Onepager</h1>
+<p>Please choose a file with <b>.jpeg</b> or <b>.jpg</b> extension.</p>
+<div id="message">
+</div>
+    <form id="myForm" onsubmit="sayLoading()" action="/onepager" method="post" enctype="multipart/form-data">
+        <input required accept="image/jpeg" style="padding: 30px;" type="file" name="file" id="file"><br>
+        <input type="hidden" name="pid" id="pid" value="<%=pid%>">
+        <input class="btn btn-primary" style="padding: 30px;" type="submit" value="Upload/Replace OnePager">
+    </form>
+        <script>
+            function sayLoading(){
+                var message = document.getElementById('message');
+                message.innerHTML = "Loading...";
+                var form = document.getElementById('myForm');
+                form.style.display = "none";
+            }
+        </script>
+
+<%-include('./_finish.ejs')%>

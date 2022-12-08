@@ -11,8 +11,9 @@
                             <div class="row">
                                 <div class="col-md-6 border rounded">
                                     <h3>Info</h3>
+                                    <a href="/onepager/<%=projects[0].pid%>">Upload One Pager</a>
                                     <form action=" /editProject" method="POST" enctype="multipart/form-data">
-                                    <input type="hidden" id="pid" name="pid" value="<%=projects[0].pid%>" /><br>
+                                    <input type="hidden" id="pid" name="pid" value="<%=projects[0].pid%>" />
                                     <label for="title">Project Name</label>
                                     <input required type="text" id="title" name="title" value="<%=projects[0].title%>" /><br>
                                     <label for="description">Description</label><br>
