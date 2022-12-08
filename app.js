@@ -402,17 +402,14 @@ app.post('/taskDelete', upload.none(), (req, res) => {
 })
 
 app.get('/myProject', (req, res) => {
-  const sql = `select * from task left join _student_task on _student_task.tid = task.tid where sid is null
-  union select * from task left join _student_task on _student_task.tid = task.tid where sid != ${req.user.id};
-  `;
-  const sql1 = `select * from student inner join project on student.pid = project.pid where sid=${req.user.id};`
-  const sql2 = `select * from _student_task join task on task.tid = _student_task.tid where sid =${req.user.id}`
-  con.query(sql + sql1 + sql2,
-    (err, results) => {
-      if (err) { console.log(err); return res.send("there was an error"); }
-      console.log(results[0])
-      return res.render('studentProject.ejs', { user: req.user, tasks: results[0], projects: results[1], myTasks: results[2] })
-    })
+  con.query(`select * from student where sid = ${req.user.id};` , (err , result)=>{
+    if(err || result[0] == null) return res.send('error')
+    if(result[0].pid == null){return res.send('you are not registered to a project yet!')}
+    con.query(`select * from task where pid = ${result[0].pid};select * from _student_task inner join task on _student_task.tid = task.tid where sid=${req.user.id};;` , (error , result2)=>{
+      if(error) return res.send('error');
+      return res.render('studentProject.ejs' , {user : req.user , tasks: result2[0] , pid:result[0].pid , myTasks: result2[1] })
+    });
+  })
 })
 
 app.get('/projectRegister/:pid', (req, res) => {
@@ -488,8 +485,8 @@ app.post('/addManager', upload.none(), (req, res) => {
 
 app.get('/responsibilities/:tid', (req, res) => {
   const sql = `select * from task join student on task.pid = student.pid where tid = ${req.params.tid};`;
-  const sql2 = `select * from _student_task join student on student.sid = _student_task.sid where ${req.params.tid};`;
-
+  const sql2 = `select * from _student_task join student on student.sid = _student_task.sid where tid=${req.params.tid};`;
+console.log(sql2)
   con.query(sql + sql2, (err, results) => {
     if (err) { console.log(err); return res.send('there was an error'); }
     return res.render('responsibilities.ejs', { user: req.user, students: results[0], responsibilities: results[1], tid: req.params.tid })
