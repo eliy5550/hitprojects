@@ -2,47 +2,75 @@
 <html lang="en">
 <%- include('./_head.ejs')%>
     <body>
+        
         <%- include('./_nav.ejs')%>
+        <br>
         <div class="container">
-            <%if(typeof projects[0] != 'undefined'){%>
-                <h1>My Project:</h1>
-            <h2><p ><%=projects[0].title%>  </p></h2>
-            <a href="/project/<%=projects[0].pid%>"> - Go to public project page</a><br><br><br>
+            
+                    <%if(typeof projects[0] != 'undefined'){%>
+                        <h1>My Project:</h1>
+                    <h2><p ><%=projects[0].title%>  </p></h2>
+                    <a href="/project/<%=projects[0].pid%>"> - Go to public project page</a><br><br><br>
+                    <div class="alert alert-primary">
+                        Here you can see all the tasks in your project and update if they are done!
+                    </div>
+                    <div class="row">
+                        <div class="col">
 
+                    <h3>Tasks for You</h3>
+                    <%if(myTasks.length == 0){%>
+                        There are no tasks assigned specifically to you.
+                    <%}%>
+                    <% myTasks.forEach(task=>{%>
+                        <div 
+                        class="card border-dark mb-3"
+                         style="max-width: 18rem;">
+                            <div class="card-header">Development Stage: <b><%= task.stage%></b></div>
+                            <div class="card-body text-dark">
+                              <p class="card-title"><b><%= task.title%></b></p>
+                              <p class="card-text"><%= task.descriptionText%></p>
+                              <p class="card-text">Deadline: <%= task.deadline%></p>
+                              <br>
+                              <%if(task.isDone == 0){%>
+                                <a class="btn btn-success" href="/taskStatus/<%=task.pid+"/"+task.tid%>"">- Done -</a><br><br>
+                            <%}else{%>
+                                <b class="alert alert-success">TASK COMPLETE!</b>
+                            <%}%>
+                        </div>
+                    <%})%>
+                </div>
+            </div>
+                <div class="col">
+                    <h3>All Other Tasks</h3>
+                    <%if(tasks.length == 0){%>
+                        There are no tasks yet, the project manager will add tasks at the first meeting!
+                    <%}%>
+                    <% tasks.forEach(task=>{%>
 
-            <h3>Tasks for You</h3>
-            <%if(myTasks.length == 0){%>
-                There are no tasks assigned specifically to you.
-            <%}%>
-            <% myTasks.forEach(task=>{%>
-                task: <%= task.title%><br>
-                description: <%= task.descriptionText%><br>
-                deadline: <%= task.deadline%><br>
-                isDone: <%= task.isDone%><br>
-                <%if(task.isDone == 0){%>
-                    <a href="/taskStatus/<%=task.pid+"/"+task.tid%>"">- Done -</a><br><br>
-                <%}%>
-            <%})%><br><br><br>
-
-
-            <h3>All Tasks</h3>
-            <%if(tasks.length == 0){%>
-                There are no tasks yet, the project manager will add tasks at the first meeting!
-            <%}%>
-            <% tasks.forEach(task=>{%>
-                task: <%= task.title%><br>
-                description: <%= task.descriptionText%><br>
-                deadline: <%= task.deadline%><br>
-                isDone: <%= task.isDone%><br>
-                <%if(task.isDone == 0){%>
-                    <a href="/taskStatus/<%=task.pid+"/"+task.tid%>"">- Done -</a><br><br>
-                <%}%>
-            <%})%>
-            <%}else{%>
-                <h3>You are not registered to a project yet.</h3>
-                <p>Please choose a project from <a href="/">HERE</a> ... </p>
-            <%}%>
-        </div>
+                        <div 
+                        class="card border-dark mb-3"
+                         style="max-width: 18rem;">
+                            <div class="card-header">Development Stage: <b><%= task.stage%></b></div>
+                            <div class="card-body text-dark">
+                              <p class="card-title"><b><%= task.title%></b></p>
+                              <p class="card-text"><%= task.descriptionText%></p>
+                              <p class="card-text">Deadline: <%= task.deadline%></p>
+<br>
+                              <%if(task.isDone == 0){%>
+                                <a class="btn btn-success" href="/taskStatus/<%=task.pid+"/"+task.tid%>"">- Done -</a><br><br>
+                            <%}else{%>
+                                <b class="alert alert-success">TASK COMPLETE!</b>
+                            <%}%>
+                        </div>
+                    </div>
+                    <%})%>
+                    <%}else{%>
+                        <h3>You are not registered to a project yet.</h3>
+                        <p>Please choose a project from <a href="/">HERE</a> ... </p>
+                    <%}%>
+                </div>
+                </div>
+            </div>
         <%- include('./_footer.ejs')%>
     </body>
 
