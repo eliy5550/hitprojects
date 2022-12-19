@@ -547,10 +547,23 @@ app.post('/onepager/', upload.single('file'),appendManagerProjects, kickUnauthor
   })
 })
 
+app.post('/addMeeting', upload.none() , appendManagerProjects, kickUnauthorizedManagerOrStudentFromPost,(req, res) => {
+  const sql = `insert into projectupdates (pid , date , description , whoWasThere) values (${req.body.pid} , CURDATE() , "MEETING CREATED! Info: ${req.body.description}" , "The project manager and , ${req.body.whoWasThere}");`  
+  con.query(sql, (err) => {
+    if (err) { console.log(err); return res.send('there was an error!') }
+    return res.redirect('back')
+  })
+})
+
+
+
+
 //api
 app.get('/api', () => {
   res.status(200).json({ message: "hi" })
 })
+
+
 
 app.listen(process.env.PORT, process.env.SERVER, () => {
   console.log('listening on :  http://' + process.env.SERVER + ":" + process.env.PORT);

@@ -123,7 +123,15 @@ There are no students in this project yet!
                                 
                                                         <div class="col border">
                                                             <h3>Task Updates and Meetings</h3>
-                                                            MEETING LOGS WILL BE ADDED SOON.......
+                                                            <form class="border border-dark p-1" action="/addMeeting" method="POST" enctype="multipart/form-data">
+                                                                <h5>New meeting:</h5>
+                                                                <input type="hidden" id="pid" name="pid" value="<%=projects[0].pid%>">
+                                                                Students at the meeting: <br>
+                                                                <textarea required type="text" id="whoWasThere" name="whoWasThere" ></textarea><br>
+                                                                Describe the meeting: <br>
+                                                                <textarea required type="text" id="description" name="description" ></textarea><br>
+                                                                <input class="btn btn-primary" type="submit" value="Add Meeting">
+                                                            </form>
                                                             <% if (updates.length == 0){%>
                                                                 <br>
                                                                 There are no updates in this project yet!
