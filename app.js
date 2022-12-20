@@ -561,6 +561,12 @@ app.post('/addMeeting', upload.none() , appendManagerProjects, kickUnauthorizedM
 })
 
 
+app.get('/available', (req, res) => {
+  con.query(`select * from project where isRegisterable = 1` , (err , result)=>{
+    res.render('available.ejs', { user: req.user , projects : result })
+  });
+})
+
 
 
 //api

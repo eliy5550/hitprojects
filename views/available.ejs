@@ -1,0 +1,40 @@
+<%-include('_start.ejs')%>
+<br>
+<div class="alert alert-warning">
+    Here you can browse only projects that are available for registrarion. 
+</div>
+
+
+
+
+<table class="table border ">
+    <tr style="background-color: rgb(147, 86, 156); color: rgb(255, 255, 255);" >
+        <td><b>TITLE</b></a></td>
+        <td><b>DESCRIPTION</b></td>
+        <td><b>START</b></td>
+        <td><b>FINISH</b></td>
+        <td><b>MAX STUDENTS</b></td>
+        <td><b>CATEGORY</b></td>
+    </tr>
+    <%projects.forEach(p => {%>
+        <tr>
+            <td><a href="/Project/<%=p.pid%>"><p><%=p.title%></p></a></td>
+            <td><textarea style="resize: none; height: 30px;" readonly><%=p.description%></textarea></td>          
+            <td><%=p.start%></td>
+            <td><%=p.finish%></td>
+            <td><%=p.maxStudents%></td>
+            <td><%=p.category%></td>
+
+        </tr>
+             
+    <%});%>
+</table>
+
+<%if (projects.length == 0){%>
+    <br>
+    <div class="alert alert-danger">There are no registerable projects yet!</div>
+    <br>
+<%}%>
+
+
+<%-include('_finish.ejs')%>
