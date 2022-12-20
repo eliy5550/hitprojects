@@ -32,17 +32,24 @@
         </div>
     </div>
     <br><br>
-        <h1>Registration:</h1>
-        <% if (user.role == "student") {
-            if(user.pid == null){%>
-                <a href="/projectRegister/<%=projects[0].pid%>"><%="register to this project"%></a>
-            <%} else
-            {
-                %><%="you are already registered to a project."%><%
-            }
-        }else{
-            %><%="Login as a student to register to this project."%><%
-        }%> 
+        <%if(projects[0].isRegisterable == 1){%>
+            <b class="alert alert-success">Registration is Available</b><br><br>
+            <% if (user.role == "student") {
+                if(user.pid == null){%>
+                    <a class="btn btn-primary" href="/projectRegister/<%=projects[0].pid%>"><%="register to this project"%></a>
+            <%} else{%>
+                    <%="you are already registered to a project."%>
+            <%}}else{%>
+                <%="Login as a student to register to this project."%><%
+            }%> 
+
+        <%}else{%>
+            <b class="alert alert-warning">Registration is No Longer Available</b><br><br>
+
+        <%}%>
+
+
+        
 <br><br><br>
     <%- include('./_footer.ejs')%>
 </div>

@@ -24,7 +24,9 @@
             <%if (user.role == 'admin') {%> <td>DELETE</td> <%}%>
             <td>START</td>
             <td>FINISH</td>
-            <td>Max Students</td>
+            <td>MAX STUDENTS</td>
+            <td>REGISTERABLE</td>
+
         </tr>
         <%projects.forEach(p => {%>
             <tr>
@@ -35,7 +37,7 @@
                         <td>
                         <form onSubmit="return confirm('This will delete the project - <%=p.title%> - FOREVER!') " method="POST" action="/deleteProject" enctype="multipart/form-data">
                             <input type="hidden" id="pid" name="pid" value="<%=p.pid%>" />
-                            <input type="submit" value="DELETE PROJECT" />
+                            <input class="btn btn-danger" type="submit" value="DELETE PROJECT" />
                         </form>
                     </td>
                     <%}%>   
@@ -43,6 +45,8 @@
                 <td><%=p.start%></td>
                 <td><%=p.finish%></td>
                 <td><%=p.maxStudents%></td>
+                <td><%=p.isRegisterable%></td>
+
             </tr>
                  
         <%});%>
