@@ -450,7 +450,7 @@ app.post('/projectRegister', upload.none(), (req, res) => {
 
     con.query(sql3, (err, result) => {
       if (err) { console.log(err); return res.send('there was an error') }
-      return res.send("<h1>Registered!</h1><br><h2>This project's manager will set up a meeting at the beginning of the semester. Please be patient. <a href='/'>BACK</a></h2>")
+      return res.render("registered.ejs" , {user : req.user})
     })
 
 
