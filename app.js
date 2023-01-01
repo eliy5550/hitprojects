@@ -141,7 +141,7 @@ app.get('/', async (req, res) => {
 
 app.get('/logout', (req, res) => {
   req.session.destroy((err) => {
-    if (err) res.send('logout failed...')
+    if (err) return res.send('logout failed...')
     res.redirect('/')
   })
 })
@@ -245,7 +245,7 @@ app.post('/register', upload.none(), (req, res) => {
 
 app.get('/addProject', async (req, res) => {
   await con.query(`select * from projectcategories`, (err, result) => {
-    if (err) res.send("cant find categories");
+    if (err) return res.send("cant find categories");
     //save temp cats
     tempCategories = result
     res.render('addProject.ejs', { user: req.user, cats: result, message: "" })
@@ -316,7 +316,7 @@ app.post('/editProject', appendManagerProjects, upload.none(), kickUnauthorizedM
   con.query(sql, (err, results) => {
     if (err) {
       console.log(err);
-      res.send("err");
+      return res.send("err");
     }
     res.redirect("/editProject/" + req.body.pid)
   })
@@ -327,7 +327,7 @@ app.post('/editProject', appendManagerProjects, upload.none(), kickUnauthorizedM
 app.post('/deleteProject', upload.none(), (req, res) => {
   console.log(`delete from project where pid = ${req.body.pid}; delete from task where pid = ${req.body.pid}`)
   con.query(`delete from project where pid = ${req.body.pid}; delete from task where pid = ${req.body.pid};`, (err, results) => {
-    if (err) res.send(err)
+    if (err) return res.send(err)
     res.redirect('/editProjects')
   })
 })
@@ -345,7 +345,7 @@ app.post('/addTask/', upload.none(),appendManagerProjects , kickUnauthorizedMana
   const sql = `insert into task(pid , title , descriptionText, deadline ,isDone , stage ) values(${req.body.pid} , "${req.body.title}" , "${req.body.description}", "${req.body.deadline}" , 0 , "${req.body.stage}" );`
   const sql2 =`insert into projectupdates(pid, date , description , whoWasThere )values(${req.body.pid},  current_date() , "TASK ADDED! Info: ${req.body.description}" , "${req.user.fullName}" );`
   con.query(sql + sql2, (err, result) => {
-    if (err) { res.send("err"); }
+    if (err) { return res.send("err"); }
     res.status(201).redirect('editProject/' + req.body.pid)
   })
 })
@@ -360,7 +360,7 @@ app.post('/taskStatus', upload.none(), (req, res) => {
   const sql2 = `insert into projectupdates(pid, date , description , whoWasThere )values(${req.body.pid},  current_date() , "TASK COMPLETE! Info: ${req.body.description}" , "${req.user.fullName}" );`
   console.log(sql + sql2)
   con.query(sql + sql2, (err, results) => {
-    if (err) res.send(err)
+    if (err) return res.send(err)
     if (req.user.role == 'student') {
       return res.redirect('/myProject');
     }
@@ -394,9 +394,9 @@ app.post('/editStudent/', upload.none(), (req, res) => {
     if (req.user.id == req.body.sid || req.user.role == 'admin') {
       const sql = `update student set id= ${req.body.id} , fullname = "${req.body.fullName}" , phoneNumber = "${req.body.phoneNumber}" where sid =${req.body.sid};`
       con.query(sql, (err, result) => {
-        res.send(`done! <a href="editStudent/${req.user.id}">back</a>`)
+        return res.send(`done! <a href="editStudent/${req.user.id}">back</a>`)
       })
-    } else { res.send(`you are trying to edit a different student! <a href="editStudent/${req.user.id}">back</a>`) }
+    } else { return res.send(`you are trying to edit a different student! <a href="editStudent/${req.user.id}">back</a>`) }
   } else { `you are not a student! <a href="editStudent/${req.user.id}">back</a>` }
 })
 
