@@ -253,6 +253,9 @@ app.get('/addProject', async (req, res) => {
 })
 
 app.post('/addProject', authenticateUser, upload.none(), async (req, res) => {
+  req.body.description = req.body.description.replace(/"/g, '-');
+  console.log("DESC : " + req.body.description)
+
   const sql = `insert into project 
   (title , description , category , start , finish , maxStudents ) 
   values
@@ -261,7 +264,7 @@ app.post('/addProject', authenticateUser, upload.none(), async (req, res) => {
   console.log(sql)
   const sql2 = "select * from projectcategories;";
   con.query(sql + sql2, (err, results) => {
-    if (err) { console.log(`err in add project , ${err}`); res.send("unable to add project") }
+    if (err) { console.log(`err in add project , ${err}`); return res.send("There was a problem with your input...") }
     console.log("res1= " + JSON.stringify(results[1]))
     res.render("addProject.ejs", { user: req.user, cats: results[1], message: "project added successfully!" })
   })
