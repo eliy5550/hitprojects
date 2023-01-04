@@ -12,18 +12,18 @@
     <br>
     <div class="row border">
         <div class="col border">
-            <h1 style="text-align: center;"><%=projects[0].title%></h1>
-            <h3>Project Guide:</h3>
+            <h4 style="text-align: center;"><%=projects[0].title%></h4>
+            <h5>Project Guide:</h5>
             <%if(projects[0].fullName == null){%>
                 Mark Israel
                 <%}else{%>
                     <%=projects[0].fullName%>
                     <%}%>
             <br><br>
-            <h3>Development:</h3>
+            <h5>Development:</h5>
             Start: <%=projects[0].start%><br>
             Finish : <%=projects[0].finish%><br><br>
-            <h3>Description:</h3>
+            <h5>Description:</h5>
             <textarea style="resize: none; width: 100%; height: 200px; border: none;" readonly ><%=projects[0].description%></textarea><br>
         </div>
         <div class="col border" style="text-align: center;">
