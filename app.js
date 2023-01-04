@@ -310,13 +310,17 @@ app.get('/editProject/:pid', appendManagerProjects, kickUnauthorizedManagerOrStu
 })
 
 app.post('/editProject', appendManagerProjects, upload.none(), kickUnauthorizedManagerOrStudentFromPost, (req, res) => {
+  req.body.description = req.body.description.replace(/[";]/g, '-');
+  req.body.title = req.body.title.replace(/[";]/g, '-');
+
+
   var isRegisterable = 0;
   if(req.body.isRegisterable != null){
     isRegisterable = 1;
   }
   console.log(JSON.stringify(isRegisterable));
 
-  const sql = `UPDATE project set isRegisterable=${isRegisterable} ,title= '${req.body.title}', description = '${req.body.description}',  category = '${req.body.category}' , start= '${req.body.start}' , finish = '${req.body.finish}'  , maxStudents = ${req.body.maxStudents} where pid = ${req.body.pid};`
+  const sql = `UPDATE project set isRegisterable=${isRegisterable} ,title= "${req.body.title}", description = "${req.body.description}",  category = "${req.body.category}" , start= "${req.body.start}" , finish = "${req.body.finish}"  , maxStudents = ${req.body.maxStudents} where pid = ${req.body.pid};`
   con.query(sql, (err, results) => {
     if (err) {
       console.log(err);

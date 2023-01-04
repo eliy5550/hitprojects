@@ -4,7 +4,7 @@
     Here you can browse only projects that are available for registrarion. 
 </div>
 
-<table style="font-size: 11px;" class="table border ">
+<table style="" class="table border ">
     <tr style="background-color: rgb(147, 86, 156); color: rgb(255, 255, 255);" >
         <td><b>TITLE</b></a></td>
         <td><b>DESCRIPTION</b></td>
@@ -16,7 +16,7 @@
     <%projects.forEach(p => {%>
         <tr>
             <td><a href="/Project/<%=p.pid%>"><p><%=p.title%></p></a></td>
-            <td><textarea style="resize: none; height: 30px;" readonly><%=p.description%></textarea></td>          
+            <td><button class="btn btn-outline-info" onclick="alert(`<%=p.description%>`);";>Show</button></td>          
             <td><%=p.start%></td>
             <td><%=p.finish%></td>
             <td><%=p.maxStudents%></td>
