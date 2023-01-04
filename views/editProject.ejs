@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<%- include('./_head.ejs')%>
 
-    <body>
-        
-        <%- include('./_nav.ejs')%> <br><br>
 
-                        <div class="container">
+    <%-include('_start.ejs')%>
                             
                             <div class="row">
                                 <div class="col-md-6 border rounded">
@@ -147,9 +141,4 @@ There are no students in this project yet!
                                                                 Who Was There: <%= u.whoWasThere%><br><br>
                                                             <%})%>
                                                         </div>
-                            </div>
-                                            <%- include('./_footer.ejs')%>
-                        </div>
-    </body>
-
-</html>
+<%-include('_finish.ejs')%>
