@@ -34,7 +34,7 @@
                                     <label for="finish">Finish Date</label><br>
                                     <input type="date" id="finish" name="finish" value="<%=projects[0].finish%>" /><br>
                                     <label for="maxStudents">How many students can register</label><br>
-                                    <input required type="number" min="0" max="6" id="maxStudents" name="maxStudents"
+                                    <input required type="number" min="0" max="8" id="maxStudents" name="maxStudents"
                                         value="<%=projects[0].maxStudents%>" /><br>
                                     <label for="isRegisterable">Can students register (up to the maximum capacity) ?</label>
                                     <input type="checkbox" id="isRegisterable" name="isRegisterable" <%if(projects[0].isRegisterable){%>checked<%}%>>

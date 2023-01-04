@@ -228,6 +228,10 @@ app.get('/register', (req, res) => {
 })
 
 app.post('/register', upload.none(), (req, res) => {
+  req.body.email = req.body.email.replace(/[";]/g, '-');
+  req.body.fullName = req.body.fullName.replace(/[";]/g, '-');
+  req.body.phoneNumber = JSON.stringify(req.body.phoneNumber).replace(/[";]/g, '-');
+
   req.body.password = bcrypt.hashSync(req.body.password, process.env.PASSWORD_SECRET)
   con.query(`
   insert into student  (id,fullName,pass,email,phoneNumber ) 
@@ -253,7 +257,7 @@ app.get('/addProject', async (req, res) => {
 })
 
 app.post('/addProject', authenticateUser, upload.none(), async (req, res) => {
-  req.body.description = req.body.description.replace(/"/g, '-');
+  req.body.description = req.body.description.replace(/[";]/g, '-');
   console.log("DESC : " + req.body.description)
 
   const sql = `insert into project 
@@ -355,6 +359,7 @@ app.get('/taskStatus/:pid/:tid', (req, res) => {
 })
 
 app.post('/taskStatus', upload.none(), (req, res) => {
+  req.body.description = req.body.description.replace(/[";]/g, '-');
   console.log("pid" + req.body.pid + "tid" + req.body.tid)
   const sql = `update task set isDone = 1 where tid=${req.body.tid};`
   const sql2 = `insert into projectupdates(pid, date , description , whoWasThere )values(${req.body.pid},  current_date() , "TASK COMPLETE! Info: ${req.body.description}" , "${req.user.fullName}" );`
@@ -421,6 +426,7 @@ app.get('/myProject', (req, res) => {
 })
 
 app.get('/projectRegister/:pid', (req, res) => {
+  
   con.query(`select pid from student where sid = ${req.user.id}`, (err, result) => {
     console.log(result[0])
     if (result.length == 0) {
