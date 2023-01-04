@@ -10,14 +10,14 @@
     <%}%>
     
         <div class="row">
-            <%projects.forEach(p => {%>
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                      <h4 class="card-title"><%=p.title%></h4>
-                      <a href="/project/<%=p.pid%>" class="btn btn-primary">Project Page</a>
-                    </div>
-                  </div>
-            <%});%>
+                <%projects.forEach(p => {%>
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                          <h4 class="card-title"><%=p.title%></h4>
+                          <a href="/project/<%=p.pid%>" class="btn btn-primary">Project Page</a>
+                        </div>
+                      </div>
+                <%});%>
         </div>
     </ul>
     <%- include('./_footer.ejs')%>
