@@ -1,47 +1,46 @@
 
 
     <%-include('_start.ejs')%>
-                            
-                            <div class="row">
-                                <div class="col-md-6 border rounded">
-                                    <h3>Info</h3>
-                                    <a href="/onepager/<%=projects[0].pid%>">Upload One Pager</a>
-                                    <form action=" /editProject" method="POST" enctype="multipart/form-data">
-                                    <input type="hidden" id="pid" name="pid" value="<%=projects[0].pid%>" />
-                                    <label for="title">Project Name</label>
-                                    <input required type="text" id="title" name="title" value="<%=projects[0].title%>" /><br>
-                                    <label for="description">Description</label><br>
-                                    <textarea required type="text" id="description" name="description" rows="5" cols="50"><%=projects[0].description%>
-                                                                </textarea><br>
-                                    Category: <select name="category" id="category">
-                                        <option value="<%=projects[0].category%>">
-                                            <%=projects[0].category%>
-                                        </option>
-                                        <%cats.forEach(c=> {%>
-                                            <option value="<%=c.categoryName%>">
-                                                <%=c.categoryName%>
-                                            </option>
-                                            <%});%>
-                                    </select><br>
-                                    <label for="start">Start Date</label>
-                                    <input type="date" id="start" name="start" value="<%=projects[0].start%>" /><br>
-                                    <label for="finish">Finish Date</label><br>
-                                    <input type="date" id="finish" name="finish" value="<%=projects[0].finish%>" /><br>
-                                    <label for="maxStudents">How many students can register</label><br>
-                                    <input required type="number" min="0" max="8" id="maxStudents" name="maxStudents"
-                                        value="<%=projects[0].maxStudents%>" /><br>
-                                    <label for="isRegisterable">Can students register (up to the maximum capacity) ?</label>
-                                    <input type="checkbox" id="isRegisterable" name="isRegisterable" <%if(projects[0].isRegisterable){%>checked<%}%>>
-                                         <br><br>
-                                    <input class="btn btn-primary" type="submit" value="Update Project">
-                                                                                </form>
-                                                                    <h3>
-                                                                        <%=message%>
-                                                                    </h3>
-                                </div>
-
+    
+<div class="row">
+<div class="col-md-6 border rounded">
+<h3>Info</h3>
+<a href="/onepager/<%=projects[0].pid%>">Upload One Pager</a>
+<form action=" /editProject" method="POST" enctype="multipart/form-data">
+<input type="hidden" id="pid" name="pid" value="<%=projects[0].pid%>" />
+<label for="title">Project Name</label>
+<input required type="text" id="title" name="title" value="<%=projects[0].title%>" /><br>
+<label for="description">Description</label><br>
+<textarea required type="text" id="description" name="description" rows="5" cols="50"><%=projects[0].description%>
+</textarea><br>
+Category: <select name="category" id="category">
+<option value="<%=projects[0].category%>">
+<%=projects[0].category%>
+</option>
+<%cats.forEach(c=> {%>
+<option value="<%=c.categoryName%>">
+<%=c.categoryName%>
+</option>
+<%});%>
+</select><br>
+<label for="start">Start Date</label>
+<input type="date" id="start" name="start" value="<%=projects[0].start%>" /><br>
+<label for="finish">Finish Date</label>
+<input type="date" id="finish" name="finish" value="<%=projects[0].finish%>" /><br>
+<label for="maxStudents">How many students can register</label><br>
+<input required type="number" min="0" max="8" id="maxStudents" name="maxStudents"
+value="<%=projects[0].maxStudents%>" /><br>
+<label for="isRegisterable">Can students register (up to the maximum capacity) ?</label>
+<input type="checkbox" id="isRegisterable" name="isRegisterable" <%if(projects[0].isRegisterable){%>checked<%}%>>
+<br><br>
+<input class="btn btn-primary" type="submit" value="Update Project">
+</form>
+<h3>
+<%=message%>
+</h3>
+</div>
                                 
-<div class="col-md-6   border">
+<div class="col-md-6 border">
 <h3>Students</h3>
 <a href="/addStudent/<%=projects[0].pid%>">Add Student</a><br>
 <% if (typeof students=='undefined' || students.length==0 ){%>
@@ -73,72 +72,118 @@ There are no students in this project yet!
         <input  class="btn btn-danger" type="submit" value="REMOVE STUDENT">
     </form>
     </td>
-                                                                                                        </tr>
-                                                                                                        <br>
-                                                                                                        <%})%>
-                                                                                                </table>
-                                                                                                <%}%>
-                                                                                        
-                                                                                        
-                                                                                                        <%if (projects.length==0){%>
-                                                        <%="project not found "%>
-                                                                                                        <%}%>
-                                                    </div>
-                                                    <%if (user.role=="admin" ){%>
-                                                        <div class="col border">
-                                                            <table>                                                                <h3>Managers</h3>
-                                                                <a href="/addManager/<%=projects[0].pid%>">Assign Manager</a><br>
-                                                                <%if (projects[0].projectmanager == null) {%>
-                                                                    No one is managing this project.
-                                                                <%}%>
-                                                            </table>
-                                                        </div>
-                                                            <%}%>
-                                        <div class="col border">
-                                            <h3>Tasks</h3>
-                                            <a href="/addTask/<%=projects[0].pid%>">Add a task to this project</a>
-                                            <% if (tasks.length==0){%>
-                                                <br>
-                                                There are no tasks for this project yet!
-                                                <br>
-                                                <%}%>
-                                                    <br />
-                                                    <% tasks.forEach(task=>{%>
-                                                        task: <%= task.title%><br>
-                                                            description: <%= task.descriptionText%><br>
-                                                                deadline: <%= task.deadline%><br>
-                                                                    isDone: <%= task.isDone%><br>
-                                                                        <%if(task.isDone==0){%>
-                                                                            <a href="/taskStatus/<%=task.pid+" /"+task.tid%>"">- Done -</a>
-                                                                            <%}%>
-                                                                                <a href="/taskDelete/<%=task.pid+" /"+task.tid%>"">- Delete
-                                                                                    Task -</a>
-                                                                                <a href="/responsibilities/<%=task.tid%>"">- Responsibilities -</a>
-                                                                <br><br>
-                                                            <%})%>
-                                        </div>
-                                
-                                                        <div class="col border">
-                                                            <h3>Task Updates and Meetings</h3>
-                                                            <form class="border border-dark p-1" action="/addMeeting" method="POST" enctype="multipart/form-data">
-                                                                <h5>New meeting:</h5>
-                                                                <input type="hidden" id="pid" name="pid" value="<%=projects[0].pid%>">
-                                                                Students at the meeting: <br>
-                                                                <textarea required type="text" id="whoWasThere" name="whoWasThere" ></textarea><br>
-                                                                Describe the meeting: <br>
-                                                                <textarea required type="text" id="description" name="description" ></textarea><br>
-                                                                <input class="btn btn-primary" type="submit" value="Add Meeting">
-                                                            </form>
-                                                            <% if (updates.length == 0){%>
-                                                                <br>
-                                                                There are no updates in this project yet!
-                                                                <br>
-                                                                <%}%>
-                                                            <br />
-                                                            <% updates.forEach(u=>{%>
-                                                                Decription: <%= u.description%><br>
-                                                                Date: <%= u.date%><br>
-                                                                Who Was There: <%= u.whoWasThere%><br><br>
-                                                            <%})%>
-                                                        </div>
+</tr>
+<br>
+<%})%>
+</table>
+<%}%>
+
+<%if (projects.length==0){%>
+<%="project not found "%>
+<%}%>
+</div>
+</div>
+<br>
+<div class="row border">
+    <h3>PROGRESSION</h3>
+  <div style="width: 100%;" id="chart_div"></div>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['timeline']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'title');
+      data.addColumn('date', 'Start Date');
+      data.addColumn('date', 'Deadline');
+      data.addRows([
+          ['PROJECT DURATION' ,new Date("<%=projects[0].start%>"), new Date("<%=projects[0].finish%>") ],
+          ['YOU ARE HERE' ,new Date(), new Date()],
+          <%tasks.forEach(t => {%>
+            ['<%=t.title%>' ,new Date("<%=t.deadline.split(',')[0]%>"), new Date("<%=t.deadline.split(',')[0]%>")],
+          <%})%>
+      ]);
+
+      var options = {
+        height: 250,
+        timeline: {
+          groupByRowLabel: true
+        }
+      };
+
+      var chart = new google.visualization.Timeline(document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+
+  </script>
+
+</div>
+
+<div class="row">
+    
+    <%if (user.role=="admin" ){%>
+    <div class="col border">
+    <table>
+    <h3>Managers</h3>
+    <a href="/addManager/<%=projects[0].pid%>">Assign Manager</a><br>
+    <%if (projects[0].projectmanager == null) {%>
+    No one is managing this project.
+    <%}%>
+    </table>
+    </div>
+    <%}%>
+    
+    <div class="col border">
+    <h3>Tasks</h3>
+    <a href="/addTask/<%=projects[0].pid%>">Add a task to this project</a>
+    <% if (tasks.length==0){%>
+    <br>
+    There are no tasks for this project yet!
+    <br>
+    <%}%>
+    <br />
+    <% tasks.forEach(task=>{%>
+    task: <%= task.title%><br>
+    description: <%= task.descriptionText%><br>
+    deadline: <%= task.deadline%><br>
+    isDone: <%= task.isDone%><br>
+    <%if(task.isDone==0){%>
+    <a href="/taskStatus/<%=task.pid+" /"+task.tid%>"">- Done -</a>
+    <%}%>
+    <a href="/taskDelete/<%=task.pid+" /"+task.tid%>"">- Delete
+    Task -</a>
+    <a href="/responsibilities/<%=task.tid%>"">- Responsibilities -</a>
+    <br><br>
+    <%})%>
+    </div>
+    
+    <div class="col border">
+    
+    <h3>Task Updates and Meetings</h3>
+    <form class="border border-dark p-1" action="/addMeeting" method="POST" enctype="multipart/form-data">
+    <h5>New meeting:</h5>
+    <input type="hidden" id="pid" name="pid" value="<%=projects[0].pid%>">
+    Students at the meeting: <br>
+    <textarea required type="text" id="whoWasThere" name="whoWasThere" ></textarea><br>
+    Describe the meeting: <br>
+    <textarea required type="text" id="description" name="description" ></textarea><br>
+    <input class="btn btn-primary" type="submit" value="Add Meeting">
+    </form>
+    <% if (updates.length == 0){%>
+    <br>
+    There are no updates in this project yet!
+    <br>
+    <%}%>
+    <br />
+    <% updates.forEach(u=>{%>
+    Decription: <%= u.description%><br>
+    Date: <%= u.date%><br>
+    Who Was There: <%= u.whoWasThere%><br><br>
+    <%})%>
+    </div>
+</div>
+
+                                                        
 <%-include('_finish.ejs')%>

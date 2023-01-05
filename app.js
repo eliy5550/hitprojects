@@ -422,9 +422,9 @@ app.get('/myProject', (req, res) => {
   con.query(`select * from student where sid = ${req.user.id};` , (err , result)=>{
     if(err || result[0] == null) return res.send('error')
     if(result[0].pid == null){return res.send('you are not registered to a project yet!')}
-    con.query(`select * from task where pid = ${result[0].pid};select * from _student_task inner join task on _student_task.tid = task.tid where sid=${req.user.id};;` , (error , result2)=>{
+    con.query(`select * from task where pid = ${result[0].pid};select * from _student_task inner join task on _student_task.tid = task.tid where sid=${req.user.id};select * from project where pid=${result[0].pid};` , (error , result2)=>{
       if(error) return res.send('error');
-      return res.render('studentProject.ejs' , {user : req.user , tasks: result2[0] , pid:result[0].pid , myTasks: result2[1] })
+      return res.render('studentProject.ejs' , {user : req.user , tasks: result2[0] , pid:result[0].pid , myTasks: result2[1] , projects: result2[2] })
     });
   })
 })

@@ -1,5 +1,41 @@
 <%- include('./_start.ejs')%>
+<br>
+<div class="row border">
+    <h1>PROGRESSION</h1>
+  <div style="width: 100%;" id="chart_div"></div>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['timeline']});
+    google.charts.setOnLoadCallback(drawChart);
 
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'title');
+      data.addColumn('date', 'Start Date');
+      data.addColumn('date', 'Deadline');
+      data.addRows([
+          ['PROJECT DURATION' ,new Date("<%=projects[0].start%>"), new Date("<%=projects[0].finish%>") ],
+          ['YOU ARE HERE' ,new Date(), new Date()],
+          <%tasks.forEach(t => {%>
+            ['<%=t.title%>' ,new Date("<%=t.deadline.split(',')[0]%>"), new Date("<%=t.deadline.split(',')[0]%>")],
+          <%})%>
+      ]);
+
+      var options = {
+        height: 250,
+        timeline: {
+          groupByRowLabel: true
+        }
+      };
+
+      var chart = new google.visualization.Timeline(document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+
+  </script>
+
+</div>
 
 
         <h1>My Project:</h1>
@@ -8,7 +44,7 @@
             Here you can see all the tasks in your project and update if they are done!
         </div>
 
-        <div class="row">
+        <div style="margin: auto;" class="row">
             
             <div class="col-12 col-lg-6">
 
