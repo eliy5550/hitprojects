@@ -30,6 +30,9 @@ Category: <select name="category" id="category">
 <label for="maxStudents">How many students can register</label><br>
 <input required type="number" min="0" max="8" id="maxStudents" name="maxStudents"
 value="<%=projects[0].maxStudents%>" /><br>
+<label for="maxStudents">How many semesters</label><br>
+<input required type="number" min="1" max="3" id="numOfSemesters" name="numOfSemesters"
+value="<%=projects[0].numOfSemesters%>" /><br>
 <label for="isRegisterable">Can students register (up to the maximum capacity) ?</label>
 <input type="checkbox" id="isRegisterable" name="isRegisterable" <%if(projects[0].isRegisterable){%>checked<%}%>>
 <br><br>

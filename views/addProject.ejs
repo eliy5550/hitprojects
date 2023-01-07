@@ -44,8 +44,11 @@
                     <label for="maxStudents">How many students can register</label>
                     <input required type="number" min="0" max="8" id="maxStudents"  name="maxStudents" />
                 </div>
+                <label for="maxStudents">How many semesters</label>
+<input required type="number" min="1" max="3" id="numOfSemesters" name="numOfSemesters"
+ /><br><br>
                 <div>
-                    <input type="submit" value="Add Project">
+                    <input class="btn btn-success" type="submit" value="Add Project">
                 </div>
             </form>
             <%- include('./_footer.ejs')%>

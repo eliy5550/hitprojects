@@ -13,7 +13,7 @@ const { env, nextTick } = require('process');
 const { Console } = require('console');
 const bcrypt = require('bcrypt');
 const { resolveSoa } = require('dns');
-
+const nodemailer = require('nodemailer')
 
 const app = express()
 
@@ -116,20 +116,38 @@ const appendManagerProjects = (req, res, next) => {
   })
 }
 
-const kickUnauthorizedManagerOrStudentFromGet = (req, res , next) => {
+const kickUnauthorizedManagerOrStudentFromGet = (req, res, next) => {
   if (req.user.role == 'guest' || req.user.role == 'student') { return res.send('YOU ARE NOT AUTHORIZED TO BE HERE!') }
   if (req.user.role == 'manager' && !req.managerProjects.includes(parseInt(req.params.pid))) {
     return res.send('YOU ARE NOT AUTHORIZED TO BE HERE!')
   }
   next()
 }
-const kickUnauthorizedManagerOrStudentFromPost = (req, res , next) => {
+const kickUnauthorizedManagerOrStudentFromPost = (req, res, next) => {
   if (req.user.role == 'guest' || req.user.role == 'student') { return res.send('YOU ARE NOT AUTHORIZED TO BE HERE!') }
   if (req.user.role == 'manager' && !req.managerProjects.includes(parseInt(req.body.pid))) {
     return res.send('YOU ARE NOT AUTHORIZED TO BE HERE!')
   }
   next()
 }
+
+//email
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'no.reply.hit.projects@gmail.com',
+    pass: 'gtzsoynagclgekjb'
+  }
+});
+
+var emailRegistered = {
+  from: 'no.reply.hit.projects@gmail.com',
+  to: `eliy5550@gmail.com`,
+  subject: 'Registered Successfully.',
+  text: `Registered Successfully to a project at HIT!`
+};
+
+
 
 //pages:
 app.get('/', async (req, res) => {
@@ -247,7 +265,9 @@ app.post('/register', upload.none(), (req, res) => {
     });
 })
 
-app.get('/addProject', async (req, res) => {
+app.get('/addProject' ,async (req, res) => {
+  if (req.user.role != 'admin') return res.send("YOU ARE NOT AUTHORIZED TO BE HERE!");
+
   await con.query(`select * from projectcategories`, (err, result) => {
     if (err) return res.send("cant find categories");
     //save temp cats
@@ -261,9 +281,9 @@ app.post('/addProject', authenticateUser, upload.none(), async (req, res) => {
   console.log("DESC : " + req.body.description)
 
   const sql = `insert into project 
-  (title , description , category , start , finish , maxStudents ) 
+  (title , description , category , start , finish , maxStudents , numOfSemesters ) 
   values
-  ("${req.body.title}" , "${req.body.description}" , "${req.body.category}" , "${req.body.start}" , "${req.body.finish}" , "${req.body.maxStudents}");
+  ("${req.body.title}" , "${req.body.description}" , "${req.body.category}" , "${req.body.start}" , "${req.body.finish}" , "${req.body.maxStudents}" , "${req.body.numOfSemesters}");
   `;
   console.log(sql)
   const sql2 = "select * from projectcategories;";
@@ -315,12 +335,12 @@ app.post('/editProject', appendManagerProjects, upload.none(), kickUnauthorizedM
 
 
   var isRegisterable = 0;
-  if(req.body.isRegisterable != null){
+  if (req.body.isRegisterable != null) {
     isRegisterable = 1;
   }
   console.log(JSON.stringify(isRegisterable));
 
-  const sql = `UPDATE project set isRegisterable=${isRegisterable} ,title= "${req.body.title}", description = "${req.body.description}",  category = "${req.body.category}" , start= "${req.body.start}" , finish = "${req.body.finish}"  , maxStudents = ${req.body.maxStudents} where pid = ${req.body.pid};`
+  const sql = `UPDATE project set numOfSemesters="${req.body.numOfSemesters}", isRegisterable=${isRegisterable} ,title= "${req.body.title}", description = "${req.body.description}",  category = "${req.body.category}" , start= "${req.body.start}" , finish = "${req.body.finish}"  , maxStudents = ${req.body.maxStudents} where pid = ${req.body.pid};`
   con.query(sql, (err, results) => {
     if (err) {
       console.log(err);
@@ -340,7 +360,7 @@ app.post('/deleteProject', upload.none(), (req, res) => {
   })
 })
 
-app.get('/addTask/:pid',appendManagerProjects , kickUnauthorizedManagerOrStudentFromGet, (req, res) => {
+app.get('/addTask/:pid', appendManagerProjects, kickUnauthorizedManagerOrStudentFromGet, (req, res) => {
   var sql1 = `select * from task where pid = ${req.params.pid}; `
   con.query(sql1, (err, result) => {
     if (err) throw err;
@@ -348,10 +368,10 @@ app.get('/addTask/:pid',appendManagerProjects , kickUnauthorizedManagerOrStudent
   })
 })
 
-app.post('/addTask/', upload.none(),appendManagerProjects , kickUnauthorizedManagerOrStudentFromPost, (req, res) => {
+app.post('/addTask/', upload.none(), appendManagerProjects, kickUnauthorizedManagerOrStudentFromPost, (req, res) => {
   console.log(req.body.description)
   const sql = `insert into task(pid , title , descriptionText, deadline ,isDone , stage ) values(${req.body.pid} , "${req.body.title}" , "${req.body.description}", "${req.body.deadline}" , 0 , "${req.body.stage}" );`
-  const sql2 =`insert into projectupdates(pid, date , description , whoWasThere )values(${req.body.pid},  current_date() , "TASK ADDED! Info: ${req.body.description}" , "${req.user.fullName}" );`
+  const sql2 = `insert into projectupdates(pid, date , description , whoWasThere )values(${req.body.pid},  current_date() , "TASK ADDED! Info: ${req.body.description}" , "${req.user.fullName}" );`
   con.query(sql + sql2, (err, result) => {
     if (err) { return res.send("err"); }
     res.status(201).redirect('editProject/' + req.body.pid)
@@ -419,18 +439,18 @@ app.post('/taskDelete', upload.none(), (req, res) => {
 })
 
 app.get('/myProject', (req, res) => {
-  con.query(`select * from student where sid = ${req.user.id};` , (err , result)=>{
-    if(err || result[0] == null) return res.send('error')
-    if(result[0].pid == null){return res.send('you are not registered to a project yet!')}
-    con.query(`select * from task where pid = ${result[0].pid};select * from _student_task inner join task on _student_task.tid = task.tid where sid=${req.user.id};select * from project where pid=${result[0].pid};` , (error , result2)=>{
-      if(error) return res.send('error');
-      return res.render('studentProject.ejs' , {user : req.user , tasks: result2[0] , pid:result[0].pid , myTasks: result2[1] , projects: result2[2] })
+  con.query(`select * from student where sid = ${req.user.id};`, (err, result) => {
+    if (err || result[0] == null) return res.send('error')
+    if (result[0].pid == null) { return res.send('you are not registered to a project yet!') }
+    con.query(`select * from task where pid = ${result[0].pid};select * from _student_task inner join task on _student_task.tid = task.tid where sid=${req.user.id};select * from project where pid=${result[0].pid};`, (error, result2) => {
+      if (error) return res.send('error');
+      return res.render('studentProject.ejs', { user: req.user, tasks: result2[0], pid: result[0].pid, myTasks: result2[1], projects: result2[2] })
     });
   })
 })
 
 app.get('/projectRegister/:pid', (req, res) => {
-  
+
   con.query(`select pid from student where sid = ${req.user.id}`, (err, result) => {
     console.log(result[0])
     if (result.length == 0) {
@@ -463,7 +483,15 @@ app.post('/projectRegister', upload.none(), (req, res) => {
 
     con.query(sql3, (err, result) => {
       if (err) { console.log(err); return res.send('there was an error') }
-      return res.render("registered.ejs" , {user : req.user})
+      //test email
+      transporter.sendMail(emailRegistered, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+      return res.render("registered.ejs", { user: req.user })
     })
 
 
@@ -504,7 +532,7 @@ app.post('/addManager', upload.none(), (req, res) => {
 app.get('/responsibilities/:tid', (req, res) => {
   const sql = `select * from task join student on task.pid = student.pid where tid = ${req.params.tid};`;
   const sql2 = `select * from _student_task join student on student.sid = _student_task.sid where tid=${req.params.tid};`;
-console.log(sql2)
+  console.log(sql2)
   con.query(sql + sql2, (err, results) => {
     if (err) { console.log(err); return res.send('there was an error'); }
     return res.render('responsibilities.ejs', { user: req.user, students: results[0], responsibilities: results[1], tid: req.params.tid })
@@ -518,7 +546,7 @@ app.post('/responsibilities', upload.none(), (req, res) => {
   })
 })
 
-app.get('/addStudent/:pid',appendManagerProjects , kickUnauthorizedManagerOrStudentFromGet, (req, res) => {
+app.get('/addStudent/:pid', appendManagerProjects, kickUnauthorizedManagerOrStudentFromGet, (req, res) => {
   const sql = `select * from student`;
   con.query(sql, (err, result) => {
     if (err) { console.log(err); return res.send('there was an error'); }
@@ -526,7 +554,7 @@ app.get('/addStudent/:pid',appendManagerProjects , kickUnauthorizedManagerOrStud
   })
 })
 
-app.post('/addStudent/', upload.none(),appendManagerProjects , kickUnauthorizedManagerOrStudentFromPost ,(req, res) => {
+app.post('/addStudent/', upload.none(), appendManagerProjects, kickUnauthorizedManagerOrStudentFromPost, (req, res) => {
   const sql = `update student set pid = ${req.body.pid} where sid = ${req.body.sid};`
   con.query(sql, (err, result) => {
     if (err) { console.log(err); return res.send('An error accured!') }
@@ -552,11 +580,11 @@ app.post('/removeResponsibility', upload.none(), (req, res) => {
 })
 
 
-app.get('/onepager/:pid', appendManagerProjects ,kickUnauthorizedManagerOrStudentFromGet, (req, res) => {
+app.get('/onepager/:pid', appendManagerProjects, kickUnauthorizedManagerOrStudentFromGet, (req, res) => {
   res.render('onepager.ejs', { user: req.user, pid: req.params.pid })
 })
 
-app.post('/onepager/', upload.single('file'),appendManagerProjects, kickUnauthorizedManagerOrStudentFromPost,(req, res) => {
+app.post('/onepager/', upload.single('file'), appendManagerProjects, kickUnauthorizedManagerOrStudentFromPost, (req, res) => {
   //res.send(`name  ${req.file.filename}, size ${req.file.size}, mime  ${req.file.mimetype}, dest ${req.file.destination}`)
   const sql = `update project set onepagerpath = "${req.file.filename}" where pid = ${req.body.pid}`
   con.query(sql, (err) => {
@@ -565,8 +593,8 @@ app.post('/onepager/', upload.single('file'),appendManagerProjects, kickUnauthor
   })
 })
 
-app.post('/addMeeting', upload.none() , appendManagerProjects, kickUnauthorizedManagerOrStudentFromPost,(req, res) => {
-  const sql = `insert into projectupdates (pid , date , description , whoWasThere) values (${req.body.pid} , CURDATE() , "MEETING CREATED! Info: ${req.body.description}" , "The project manager and , ${req.body.whoWasThere}");`  
+app.post('/addMeeting', upload.none(), appendManagerProjects, kickUnauthorizedManagerOrStudentFromPost, (req, res) => {
+  const sql = `insert into projectupdates (pid , date , description , whoWasThere) values (${req.body.pid} , CURDATE() , "MEETING CREATED! Info: ${req.body.description}" , "The project manager and , ${req.body.whoWasThere}");`
   con.query(sql, (err) => {
     if (err) { console.log(err); return res.send('there was an error!') }
     return res.redirect('back')
@@ -575,8 +603,8 @@ app.post('/addMeeting', upload.none() , appendManagerProjects, kickUnauthorizedM
 
 
 app.get('/available', (req, res) => {
-  con.query(`select * from project where isRegisterable = 1` , (err , result)=>{
-    res.render('available.ejs', { user: req.user , projects : result })
+  con.query(`select * from project where isRegisterable = 1`, (err, result) => {
+    res.render('available.ejs', { user: req.user, projects: result })
   });
 })
 
@@ -592,4 +620,7 @@ app.get('/api', () => {
 app.listen(process.env.PORT, process.env.SERVER, () => {
   console.log('listening on :  http://' + process.env.SERVER + ":" + process.env.PORT);
   console.log(process.env.USER)
+
+
+
 })
